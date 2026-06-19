@@ -1,7 +1,7 @@
 import bg_home from "./bg_home.jpg"
-import raven_logo from "./raven_logo.jpg"
+import logo from "./logo.png"
 const assets={
     bg_home,
-    raven_logo
+    logo
 }
 export default assets;
