@@ -1,0 +1,31 @@
+{
+  "name": "raven_backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "keywords": [],
+  "author": "sumit kumar",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  },
+  "dependencies": {
+    "@sendgrid/mail": "^8.1.6",
+    "bcryptjs": "^3.0.3",
+    "body-parser": "^2.2.2",
+    "connect-mongodb-session": "^5.0.0",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "express-validator": "^7.3.2",
+    "kill-port": "^2.0.1",
+    "mongodb": "^7.1.1",
+    "mongoose": "^9.3.3",
+    "multer": "^2.1.1"
+  }
+}
