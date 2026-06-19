@@ -7,7 +7,7 @@ import { HiOutlineSearch } from "react-icons/hi";
 const Sidebar = ({ selectedUser, setSelectedUser }) => {
     const navigate = useNavigate()
     return (
-        <div>
+        <div className='bg-[rgb(255,255,255)]'>
             <div className='pb-5'>
                 <div className='flex justify-between items-center'>
 
@@ -31,10 +31,10 @@ const Sidebar = ({ selectedUser, setSelectedUser }) => {
                         </div>
                     </div>
                 </div>
-                <div className="flex items-center gap-2 px-3 py-2 rounded-full border-gray-800 border-2 mr-5">
+                <div className="flex items-center gap-2 px-3 py-2 rounded-full border-gray-800 border-2 mx-3">
                     <HiOutlineSearch
                         size={20}
-                        className="text-gray-800"
+                        className="text-gray-800 cursor-pointer"
                     />
                     <input
                         type="text"
