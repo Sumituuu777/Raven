@@ -1,10 +1,17 @@
-
+import { Route, Routes } from "react-router-dom"
+import HomePage from "./pages/HomePage"
+import LoginPage from "./pages/LoginPage"
+import ProfilePage from "./pages/ProfilePage"
 function App() {
 
   return (
-    <>
-      hello
-    </>
+    <div className="bg-[url('./assets/bg_home.jpg')] bg-cover">
+      <Routes>
+        <Route path="/" element={<HomePage/>}/>
+        <Route path="/login" element={<LoginPage/>}/>
+        <Route path="/profile" element={<ProfilePage/>}/>
+      </Routes>
+    </div>
   )
 }
 
