@@ -1,5 +1,5 @@
 import React from 'react'
-import assets from '../assets/assets'
+import assets, { userDummyData } from '../assets/assets'
 import { useNavigate } from 'react-router-dom'
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { HiOutlineSearch } from "react-icons/hi";
@@ -31,7 +31,7 @@ const Sidebar = ({ selectedUser, setSelectedUser }) => {
                         </div>
                     </div>
                 </div>
-                <div className="flex items-center gap-2 px-3 py-2 rounded-full border-gray-800 border-2 mx-3">
+                <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-gray-200 hover:bg-gray-300 border-gray-800 border-2 mx-3">
                     <HiOutlineSearch
                         size={20}
                         className="text-gray-800 cursor-pointer"
@@ -39,9 +39,27 @@ const Sidebar = ({ selectedUser, setSelectedUser }) => {
                     <input
                         type="text"
                         placeholder="Search users..."
-                        className="bg-transparent outline-none text-gray-800 placeholder-gray-800"
+                        className="bg-transparent outline-none w-full text-gray-800 placeholder-gray-800"
                     />
                 </div>
+            </div>
+            <div className='flex flex-col'>
+                {userDummyData.map((user,index)=>(
+                    <div className={`relative flex items-center gap-2 p-2 pl-4 rounded cursor-pointer max-sm:text-sm`}>
+                        <img src={user?.profilePic || assets.avatar_icon} alt="userpic" 
+                        className='w-8.75 aspect-square rounded-full'/>
+                        <div className='flex flex-col leading-5'>
+                            <p>{user.fullName}</p>
+                            {
+                                index<3
+                                ? <span className=' text-green-400 text-xs'>Online</span>
+                                :<span className='text-gray-400 text-xs'>Offline</span>
+                            }
+                        </div>
+                        {index>2 && <p className='absolute top-4 right-4 text-xs w-5 h-5 flex justify-center items-center rounded-full bg-violet-500/50'>{index}</p>}
+                    </div>
+                ))}
+
             </div>
         </div>
     )
