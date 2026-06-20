@@ -13,6 +13,7 @@ import arrow_icon from './arrow_icon.png'
 import avatar_icon from './avatar_icon.png'
 import help_icon from './help_icon.png'
 import gallery_icon from './gallery_icon.svg'
+import raven_logo from './raven_logo.svg'
 import logo_big from './logo_big.svg'
 import logo_icon from './logo_icon.svg'
 import code from './code.svg'
@@ -28,6 +29,7 @@ const assets = {
        bg_home,
        logo,
     avatar_icon,
+    raven_logo,
     gallery_icon,
     help_icon,
     logo_big,

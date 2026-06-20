@@ -11,7 +11,7 @@ const Sidebar = ({ selectedUser, setSelectedUser }) => {
             <div className='pb-5'>
                 <div className='flex justify-between items-center'>
 
-                    <img src={assets.logo} alt="logo" className='max-w-40' />
+                    <img src={assets.logo} alt="logo" className='max-w-40'/>
 
                     <div className='relative py-2 group'>
 
@@ -31,7 +31,7 @@ const Sidebar = ({ selectedUser, setSelectedUser }) => {
                         </div>
                     </div>
                 </div>
-                <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-gray-200 hover:bg-gray-300 border-gray-800 border-2 mx-3">
+                <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-gray-200 hover:bg-gray-300 border-gray-300 hover:border-gray-700 border-2 mx-3">
                     <HiOutlineSearch
                         size={20}
                         className="text-gray-800 cursor-pointer"
