@@ -10,7 +10,7 @@
   "keywords": [],
   "author": "sumit kumar",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "devDependencies": {
     "nodemon": "^3.1.14"
   },
@@ -18,14 +18,17 @@
     "@sendgrid/mail": "^8.1.6",
     "bcryptjs": "^3.0.3",
     "body-parser": "^2.2.2",
+    "cloudinary": "^2.10.0",
     "connect-mongodb-session": "^5.0.0",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
     "express-validator": "^7.3.2",
+    "jsonwebtoken": "^9.0.3",
     "kill-port": "^2.0.1",
     "mongodb": "^7.1.1",
     "mongoose": "^9.3.3",
-    "multer": "^2.1.1"
+    "multer": "^2.1.1",
+    "socket.io": "^4.8.3"
   }
 }
