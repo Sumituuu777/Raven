@@ -9,21 +9,38 @@ const ProfilePage = () => {
   const [name, setName]=useState("Martin Jhonson")
   const [bio, setBio]=useState("Hi everyone! I am new to Raven!!")
 
-
+  const handleSubmit= async (event)=>{
+    event.preventDefault()
+    navigate('/')
+  }
   return (
     <div className='min-h-screen bg-cover backdrop-blur-xs bg-no-repeat flex items-center justify-center'>
-      <div className='w-5/6 max-w-2xl backdrop-blur-2xl text-white bg-gray-500 border-2 border-e-gray-600 flex items-center justify-between max-sm:flex-col-reverse rounded-lg'>
+      <div className='w-5/6 max-w-2xl backdrop-blur-2xl text-white bg-gray-500 border-2 border-gray-700 flex items-center justify-between max-sm:flex-col-reverse rounded-lg'>
 
-        <form className='flex flex-col gap-5 p-10 flex-1'>
+        <form onSubmit={handleSubmit} className='flex flex-col gap-5 p-10 flex-1'>
 
           <h3 className='text-lg'>Profile details</h3>
+
           <label htmlFor="avatar" className='flex items-center gap-3 cursor-pointer'>
+
             <input onChange={(e)=>setSelectedImg(e.target.files[0])} type="file" name="" id="avatar" accept='.png, .jpg, .jpeg' hidden/>
-            <img src={selectedImg ? URL.createObjectURL(selectedImg): assets.avatar_icon} alt=""  className={``}/>
+            <img src={selectedImg ? URL.createObjectURL(selectedImg): assets.avatar_icon} alt=""  className={` w-12 h-12 ${ selectedImg && 'rounded-full'}`}/>
+
+            Upload profile image
           </label>
 
+            <input onChange={(e)=>setName(e.target.value)} value={name}
+             type="text" required placeholder='Your Name' className='p-2 border border-gray-700 rounded-md focus:outline-none focus:ring-2 text-white'/>
+
+            <textarea onChange={(e)=>setBio(e.target.value)} value={bio}
+            placeholder='Add profile bio' className='p-2 border border-gray-700 rounded-md focus:outline-none focus:ring-2 text-white' rows={4}
+            ></textarea>
+
+            <button type='submit' className='py-3 bg-gray-50 rounded-md cursor-pointer font-semibold text-gray-500'>
+              Save
+            </button>
         </form>
-        <img src="" alt="" />
+        <img src={assets.raven_logo} className='max-w-65 aspect-square rounded-full mx-10 max-sm:mt-10' alt="" />
       </div>
     </div>
   )
