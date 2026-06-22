@@ -3,7 +3,8 @@ const http=require('http');
 const path=require('path');
 const express=require('express');
 const bodyparser=require('body-parser');
-const cors = require('cors')
+const cors = require('cors');
+const userRouter= require('./routes/userRoutes');
 require('dotenv').config();
 
 //local modules
@@ -33,6 +34,9 @@ app.use(bodyparser.urlencoded({extended:true}));
 app.use(cors())
 
 app.use('/api/status',(req,res)=> res.send("Server is live"))
+
+// Routes setup
+app.use("/api/auth",userRouter)
 
 
 
