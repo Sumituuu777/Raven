@@ -4,10 +4,13 @@ const path=require('path');
 const express=require('express');
 const bodyparser=require('body-parser');
 const cors = require('cors');
-const userRouter= require('./routes/userRoutes');
 require('dotenv').config();
+import { Server } from 'socket.io';
 
 //local modules
+const userRouter= require('./routes/userRoutes');
+const { default: messagerouter } = require('./routes/messageRoutes');
+
 
 const app=express();
 
@@ -28,6 +31,29 @@ mongoose.connect(url)
 })
 
 
+export const io=new Server(server,{
+    cors:{origin:"*"}
+})
+
+export const userSocketMap={}; // userId : socketId
+
+// socket io handler
+io.on("connection",(socket)=>{
+    const userId=socket.handshake.query.userId
+    console.log("user connection",userId);
+    
+    if(userId) userSocketMap[userId]=socket.id
+
+    // show online to all connected user
+    io.emit("getOnlineUser",Object.keys(userSocketMap))
+
+    socket.on("disconnect",()=>{
+        console.log("User disconnected",userId)
+        delete userSocketMap[userId]
+    })
+})
+
+
 // MiddleWare
 app.use(express.json({limit:"4mb"}))
 app.use(bodyparser.urlencoded({extended:true}));
@@ -37,7 +63,4 @@ app.use('/api/status',(req,res)=> res.send("Server is live"))
 
 // Routes setup
 app.use("/api/auth",userRouter)
-
-
-
-
+app.use("/api/message",messagerouter)
