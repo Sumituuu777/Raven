@@ -7,10 +7,11 @@ import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import { Server } from "socket.io";
-
+ 
 // Local modules
 import userRouter from "./routes/userRoutes.js";
 import messageRouter from "./routes/messageRoutes.js";
+import cloudinary from "./lib/cloudinary.js";
 
 dotenv.config();
 
@@ -21,7 +22,7 @@ const url = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@airbnb.
 
 const PORT = process.env.PORT || 3050;
 
-// Socket.IO
+// Socket.Io
 export const io = new Server(server, {
   cors: {
     origin: "*",
@@ -49,7 +50,7 @@ io.on("connection", (socket) => {
       delete userSocketMap[userId];
     }
 
-    io.emit("getOnlineUser", Object.keys(userSocketMap));
+    io.emit("getOnlineUsers", Object.keys(userSocketMap));
   });
 });
 
@@ -65,6 +66,7 @@ app.use("/api/status", (req, res) => {
 // Routes
 app.use("/api/auth", userRouter);
 app.use("/api/message", messageRouter);
+
 
 // Database Connection
 mongoose
