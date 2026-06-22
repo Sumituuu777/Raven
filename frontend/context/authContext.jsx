@@ -7,7 +7,7 @@ const backendUrl=import.meta.env.VITE_BACKEND_URL
 axios.defaults.baseURL=backendUrl
 
 export const AuthContext=createContext()
-export const AuthProvider=async({children})=>{
+export const AuthProvider= ({children})=>{
 
     const [token,setToken]=useState(localStorage.getItem("token"))
     const [authUser,setAuthUser]=useState(null);
@@ -48,7 +48,7 @@ export const AuthProvider=async({children})=>{
             toast.error(error.message)
         }
     }
-
+//------------------------------Logout--------------------------
     const logout=async()=>{
         try {
             localStorage.removeItem("token");
@@ -64,9 +64,22 @@ export const AuthProvider=async({children})=>{
         }
     }
 
+//---------------------update profile function-----------------------------
 
+    const updateProfile=async(body)=>{
+        try {
+            const {data}=await axios.post("/api/auth/update-profile",body)
 
-
+            if(data.success){
+                setAuthUser(data.user)
+                toast.success("Profile updated Successfully")
+            }
+        } catch (error) {
+            toast.error(error.message)
+            
+        }
+         
+    }
 
 
     // connect socket function to upadate online users 
@@ -98,7 +111,10 @@ export const AuthProvider=async({children})=>{
         axios,
         authUser,
         onlineUsers,
-        socket
+        socket,
+        login,
+        logout,
+        updateProfile
     }
     return (
         <AuthContext.Provider value={value}>

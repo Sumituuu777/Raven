@@ -1,5 +1,5 @@
-import Message from "../Models/message";
-import User from "../Models/user"
+import Message from "../Models/message.js";
+import User from "../Models/user.js"
 import cloudinary from "../lib/cloudinary.js"
 import { io,userSocketMap } from "../app.js";
 
