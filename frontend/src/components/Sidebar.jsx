@@ -9,69 +9,151 @@ import { ChatContext } from '../../context/ChatContext';
 const Sidebar = () => {
     const navigate = useNavigate()
 
-    const { getUsers, selectedUser, setSelectedUser, users, unseenMessages, setUnseenMessages } = useContext(ChatContext)
+    const {
+        getUsers,
+        selectedUser,
+        setSelectedUser,
+        users,
+        unseenMessages,
+        setUnseenMessages
+    } = useContext(ChatContext)
 
     const { logout, onlineUsers } = useContext(AuthContext)
 
-    const [input, setInput] = useState(false)
+    const [input, setInput] = useState("")
+    const [showMenu, setShowMenu] = useState(false)
 
-    const filteredUsers = input ? users.filter((user) => user.fullName.toLowerCase().includes(input.toLowerCase())) : users
+    const filteredUsers = input
+        ? users.filter((user) =>
+            user.fullName?.toLowerCase().includes(input.toLowerCase())
+        )
+        : users
 
     useEffect(() => {
         getUsers()
     }, [onlineUsers])
 
+    useEffect(() => {
+        const handleClickOutside = () => {
+            setShowMenu(false)
+        }
+
+        if (showMenu) {
+            document.addEventListener("click", handleClickOutside)
+        }
+
+        return () => {
+            document.removeEventListener("click", handleClickOutside)
+        }
+    }, [showMenu])
+
     return (
-        <div className='bg-[rgb(255,255,255)]'>
+        <div className='bg-[rgb(255,255,255)] h-full overflow-y-auto'>
             <div className='pb-5'>
                 <div className='flex justify-between items-center'>
 
-                    <img src={assets.logo} alt="logo" className='max-w-40' />
+                    <img
+                        src={assets.logo}
+                        alt="logo"
+                        className='max-w-40'
+                    />
 
-                    <div className='relative py-2 group'>
+                    <div className='relative py-2'>
 
                         <HiOutlineDotsVertical
                             size={22}
                             className="cursor-pointer text-black mr-5"
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                setShowMenu(prev => !prev)
+                            }}
                         />
 
-                        <div className='absolute top-full right-0 z-20 w-32 p-5 rounded-md border border-gray-600 text-gray-100 hidden group-hover:block bg-[#1a1a1a]'>
+                        {showMenu && (
+                            <div
+                                onClick={(e) => e.stopPropagation()}
+                                className='absolute top-full right-0 z-20 w-32 p-4 rounded-md border border-gray-600 text-gray-100 bg-[#1a1a1a]'
+                            >
+                                <p
+                                    className='cursor-pointer text-sm'
+                                    onClick={() => {
+                                        setShowMenu(false)
+                                        navigate('/profile')
+                                    }}
+                                >
+                                    Edit profile
+                                </p>
 
-                            <p className='cursor-pointer text-sm' onClick={() => navigate('/profile')}>Edit profile</p>
+                                <hr className='my-2 border-t border-gray-500' />
 
-                            <hr className='my-2 border-t border-gray-500' />
+                                <p
+                                    onClick={() => {
+                                        setShowMenu(false)
+                                        logout()
+                                    }}
+                                    className='cursor-pointer text-sm'
+                                >
+                                    Logout
+                                </p>
+                            </div>
+                        )}
 
-                            <p onClick={() => logout()} className='cursor-pointer text-sm'>Logout</p>
-
-                        </div>
                     </div>
                 </div>
+
                 <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-gray-200 hover:bg-gray-300 border-gray-300 hover:border-gray-700 border-2 mx-3">
                     <HiOutlineSearch
                         size={20}
                         className="text-gray-800 cursor-pointer"
                     />
+
                     <input
                         type="text"
                         placeholder="Search users..."
+                        value={input}
                         onChange={(e) => setInput(e.target.value)}
                         className="bg-transparent outline-none w-full text-gray-800 placeholder-gray-800"
                     />
                 </div>
             </div>
+
             <div className='flex flex-col'>
                 {filteredUsers.map((user, index) => (
-                    <div onClick={() => { setSelectedUser(user); setUnseenMessages((prev) => ({ ...prev, [user._id]: 0 })) }} key={index} className={`relative flex items-center gap-2 p-2 pl-4 rounded cursor-pointer max-sm:text-sm ${selectedUser?._id === user._id && 'bg-gray-300'}`}>
-                        <img src={user?.profilePic || assets.avatar_icon} alt="userpic"
-                            className='w-8.75 aspect-square rounded-full' />
+                    <div
+                        key={index}
+                        onClick={() => {
+                            setSelectedUser(user)
+                            setUnseenMessages((prev) => ({
+                                ...prev,
+                                [user._id]: 0
+                            }))
+                        }}
+                        className={`relative flex items-center gap-2 p-2 pl-4 rounded cursor-pointer max-sm:text-sm ${
+                            selectedUser?._id === user._id
+                                ? 'bg-gray-300'
+                                : ''
+                        }`}
+                    >
+                        <img
+                            src={user?.profilePic || assets.avatar_icon}
+                            alt="userpic"
+                            className='w-8.75 aspect-square rounded-full'
+                        />
+
                         <div className='flex flex-col leading-5'>
                             <p>{user.fullName}</p>
-                            {
-                                onlineUsers.includes(user._id)
-                                    ? <span className=' text-green-400 text-xs'>Online</span>
-                                    : <span className='text-gray-400 text-xs'>Offline</span>
-                            }
+
+                            {onlineUsers.includes(user._id) ? (
+                                <span className='text-green-400 text-xs'>
+                                    Online
+                                </span>
+                            ) : (
+                                <span className='text-gray-400 text-xs'>
+                                    Offline
+                                </span>
+                            )}
                         </div>
+
                         {Number(unseenMessages?.[user._id]) > 0 && (
                             <p className='absolute top-4 right-4 text-xs w-5 h-5 flex justify-center items-center rounded-full bg-violet-500/50'>
                                 {unseenMessages[user._id]}
@@ -79,7 +161,6 @@ const Sidebar = () => {
                         )}
                     </div>
                 ))}
-
             </div>
         </div>
     )
