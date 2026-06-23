@@ -31,7 +31,7 @@ const ProfilePage = () => {
     }
   }
   return (
-    <div className='w-full max-w-2xl h-[95dvh] backdrop-blur-2xl text-white bg-gray-500 border-2 border-gray-700 flex items-center justify-between max-sm:flex-col-reverse rounded-lg overflow-y-auto'>
+    <div className='h-screen bg-cover backdrop-blur-xs bg-no-repeat flex items-center justify-center p-2 overflow-hidden'>
       <div className='w-5/6 max-w-2xl backdrop-blur-2xl text-white bg-gray-500 border-2 border-gray-700 flex items-center justify-between max-sm:flex-col-reverse rounded-lg'>
 
         <form onSubmit={handleSubmit} className='flex flex-col gap-5 p-6 md:p-10 flex-1'>
