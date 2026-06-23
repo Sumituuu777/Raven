@@ -85,7 +85,7 @@ export const ChatProvider=({children})=>{
     },[socket,selectedUser])
 
     const value={
-        messages,users,selectedUser,getUsers,setMessages,sendMessages,setSelectedUser,unseenMessages,setUnseenMessages
+        messages,users,selectedUser,getUsers,setMessages,getMessages,sendMessages,setSelectedUser,unseenMessages,setUnseenMessages
     }
 
     return (

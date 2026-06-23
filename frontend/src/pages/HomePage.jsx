@@ -9,7 +9,7 @@ const HomePage = () => {
       <div className="backdrop-blur-xl border-2 border-gray-600 rounded-2xl overflow-hidden h-full   grid grid-cols-1 relative md:grid-cols-[2fr_3fr]">
         
         <Sidebar/>
-        <ChatContainer selectedUser={selectedUser} setSelectedUser={setSelectedUser}/>
+        <ChatContainer/>
       </div>
     </div>
   )
