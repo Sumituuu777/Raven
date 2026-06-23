@@ -13,7 +13,7 @@ export const getUsersForSidebar=async(req,res)=>{
         const unseenMessages={}
         const promises= filteredUser.map( async (user)=>{
             const message= await Message.find({senderId:user._id , receveirId:userId,seen:false})
-            if(message>0){
+            if(message.length>0){
                 unseenMessages[user._id]=message.length
             }
         })
@@ -80,7 +80,7 @@ export const markMessageSeen=async(req,res)=>{
             imageurl=(await uploadResponse).secure_url
         }
 
-        const newMessage=Message.create({
+        const newMessage= await Message.create({
             senderId,
             receveirId,
             text,

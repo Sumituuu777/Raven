@@ -4,10 +4,10 @@ import toast from "react-hot-toast";
 
 export const ChatContext=createContext()
 
-export const chatProvider=({children})=>{
+export const ChatProvider=({children})=>{
 
     const [users,setUsers]=useState([])
-    const [message,setMessage]=useState([])
+    const [messages,setMessages]=useState([])
     const [selectedUser,setSelectedUser]=useState(null)
     const [unseenMessages,setUnseenMessages]=useState({})
 
@@ -20,7 +20,7 @@ export const chatProvider=({children})=>{
 
             if(data.success){
                 setUsers(data.users)
-                setUnSeenMessages(data.unseenMessages)
+                setUnseenMessages(data.unseenMessages)
             }
         } catch (error) {
             toast(error.message)
@@ -33,7 +33,7 @@ export const chatProvider=({children})=>{
             const {data } =await axios.get(`/api/messages/${userId}`)
 
             if(data.success){
-                setMessage(data.messages)
+                setMessages(data.messages)
             }
         } catch (error) {
             toast(error.message)
@@ -45,7 +45,7 @@ export const chatProvider=({children})=>{
         try{
             const {data } =await axios.post(`/api/messages/send/${selectedUser._id}`,messageData)
             if(data.success){
-                setMessage((prevMessages)=>[...prevMessages, data.messages])
+                setMessages((prevMessages)=>[...prevMessages, data.newMessage])
             }else{
                 toast(data.message)
             }
@@ -62,7 +62,7 @@ export const chatProvider=({children})=>{
 
             if(selectedUser && newMessage.senderId===selectedUser._id){
                 newMessage.seen=true
-                setMessage((prevMessages)=>[...prevMessages, newMessage])
+                setMessages((prevMessages)=>[...prevMessages, newMessage])
                 axios.put(`/api/messages/mark/${newMessage._id}`)
             }else{
                 setUnseenMessages((prevUnseenMessages)=>({
@@ -85,10 +85,12 @@ export const chatProvider=({children})=>{
     },[socket,selectedUser])
 
     const value={
-        message,users,selectedUser,getUsers,setMessage,sendMessages,setSelectedUser,unseenMessages,setUnseenMessages
+        messages,users,selectedUser,getUsers,setMessages,sendMessages,setSelectedUser,unseenMessages,setUnseenMessages
     }
 
-    return (<ChatContext.Provider value={value}>
+    return (
+    <ChatContext.Provider value={value}>
         {children}
-    </ChatContext.Provider>)
+    </ChatContext.Provider>
+    )
 }

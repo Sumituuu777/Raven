@@ -18,7 +18,7 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
-const url = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@airbnb.c30s2fi.mongodb.net/airbnb`;
+const url = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@airbnb.c30s2fi.mongodb.net/raven`;
 
 const PORT = process.env.PORT || 3050;
 

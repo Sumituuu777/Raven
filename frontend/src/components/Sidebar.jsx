@@ -1,14 +1,26 @@
-import React, { useContext } from 'react'
-import assets, { userDummyData } from '../assets/assets'
+import React, { useContext, useEffect, useState } from 'react'
+import assets from '../assets/assets'
 import { useNavigate } from 'react-router-dom'
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { HiOutlineSearch } from "react-icons/hi";
 import { AuthContext } from '../../context/authContext';
+import { ChatContext } from '../../context/ChatContext';
 
-const Sidebar = ({ selectedUser, setSelectedUser }) => {
+const Sidebar = () => {
     const navigate = useNavigate()
 
-    const {logout} = useContext(AuthContext)
+    const {getUsers,selectedUser,setSelectedUser,users,unseenMessages,setUnseenMessages}=useContext(ChatContext)
+
+    const {logout , onlineUsers} = useContext(AuthContext)
+
+    const [input,setInput] = useState(false)
+
+    const filteredUsers=input? users.filter((user)=>user.fullName.toLowerCase().includes( input.toLowerCase() )) : users
+
+    useEffect(()=>{
+        getUsers()
+    },[onlineUsers])
+
     return (
         <div className='bg-[rgb(255,255,255)]'>
             <div className='pb-5'>
@@ -42,24 +54,25 @@ const Sidebar = ({ selectedUser, setSelectedUser }) => {
                     <input
                         type="text"
                         placeholder="Search users..."
+                        onChange={(e)=>setInput(e.target.value)}
                         className="bg-transparent outline-none w-full text-gray-800 placeholder-gray-800"
                     />
                 </div>
             </div>
             <div className='flex flex-col'>
-                {userDummyData.map((user,index)=>(
+                {filteredUsers.map((user,index)=>(
                     <div onClick={()=>{setSelectedUser(user)}} key={index} className={`relative flex items-center gap-2 p-2 pl-4 rounded cursor-pointer max-sm:text-sm ${selectedUser?._id===user._id && 'bg-gray-300'}`}>
                         <img src={user?.profilePic || assets.avatar_icon} alt="userpic" 
                         className='w-8.75 aspect-square rounded-full'/>
                         <div className='flex flex-col leading-5'>
                             <p>{user.fullName}</p>
                             {
-                                index<3
+                                onlineUsers.includes(user._id)
                                 ? <span className=' text-green-400 text-xs'>Online</span>
                                 :<span className='text-gray-400 text-xs'>Offline</span>
                             }
                         </div>
-                        {index>2 && <p className='absolute top-4 right-4 text-xs w-5 h-5 flex justify-center items-center rounded-full bg-violet-500/50'>{index}</p>}
+                        {unseenMessages?.[user._id] && <p className='absolute top-4 right-4 text-xs w-5 h-5 flex justify-center items-center rounded-full bg-violet-500/50'>{unseenMessages[user._id]}</p>}
                     </div>
                 ))}
 
