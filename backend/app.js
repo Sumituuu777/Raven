@@ -65,7 +65,7 @@ app.use("/api/status", (req, res) => {
 
 // Routes
 app.use("/api/auth", userRouter);
-app.use("/api/message", messageRouter);
+app.use("/api/messages", messageRouter);
 
 
 // Database Connection

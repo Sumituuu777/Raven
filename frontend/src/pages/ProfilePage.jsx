@@ -57,7 +57,7 @@ const ProfilePage = () => {
               Save
             </button>
         </form>
-        <img src={assets.raven_logo} className={`${ selectedImg && 'rounded-full'} max-w-65 aspect-square rounded-full mx-10 max-sm:mt-10`} alt="" />
+        <img src={ authUser?.profilePic || assets.raven_logo} className={`${ selectedImg && 'rounded-full'} max-w-65 aspect-square rounded-full mx-10 max-sm:mt-10`} alt="" />
       </div>
     </div>
   )

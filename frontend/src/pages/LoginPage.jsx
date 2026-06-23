@@ -61,10 +61,12 @@ const LoginPage = () => {
           {currentState==="Sign up" ? "Create Account" : "Login Now"}
         </button>
 
+        {currentState==="Sign up" && (
         <div className='flex items-center text-sm gap-2 text-gray-800'>
           <input type="checkbox" className='' required/>
           <p>Agree to the terms of use & privacy policy</p>
         </div>
+        )}
 
         <div className='flex flex-col gap-2'>
           {currentState==="Sign up" ? (
