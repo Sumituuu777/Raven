@@ -41,7 +41,7 @@ io.on("connection", (socket) => {
   }
 
   // Send online users to everyone
-  io.emit("getOnlineUser", Object.keys(userSocketMap));
+  io.emit("getOnlineUsers", Object.keys(userSocketMap));
 
   socket.on("disconnect", () => {
     console.log("User disconnected:", userId);

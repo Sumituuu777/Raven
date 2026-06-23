@@ -9,24 +9,24 @@ import { ChatContext } from '../../context/ChatContext';
 const Sidebar = () => {
     const navigate = useNavigate()
 
-    const {getUsers,selectedUser,setSelectedUser,users,unseenMessages,setUnseenMessages}=useContext(ChatContext)
+    const { getUsers, selectedUser, setSelectedUser, users, unseenMessages, setUnseenMessages } = useContext(ChatContext)
 
-    const {logout , onlineUsers} = useContext(AuthContext)
+    const { logout, onlineUsers } = useContext(AuthContext)
 
-    const [input,setInput] = useState(false)
+    const [input, setInput] = useState(false)
 
-    const filteredUsers=input? users.filter((user)=>user.fullName.toLowerCase().includes( input.toLowerCase() )) : users
+    const filteredUsers = input ? users.filter((user) => user.fullName.toLowerCase().includes(input.toLowerCase())) : users
 
-    useEffect(()=>{
+    useEffect(() => {
         getUsers()
-    },[onlineUsers])
+    }, [onlineUsers])
 
     return (
         <div className='bg-[rgb(255,255,255)]'>
             <div className='pb-5'>
                 <div className='flex justify-between items-center'>
 
-                    <img src={assets.logo} alt="logo" className='max-w-40'/>
+                    <img src={assets.logo} alt="logo" className='max-w-40' />
 
                     <div className='relative py-2 group'>
 
@@ -41,7 +41,7 @@ const Sidebar = () => {
 
                             <hr className='my-2 border-t border-gray-500' />
 
-                            <p onClick={()=>logout()} className='cursor-pointer text-sm'>Logout</p>
+                            <p onClick={() => logout()} className='cursor-pointer text-sm'>Logout</p>
 
                         </div>
                     </div>
@@ -54,25 +54,29 @@ const Sidebar = () => {
                     <input
                         type="text"
                         placeholder="Search users..."
-                        onChange={(e)=>setInput(e.target.value)}
+                        onChange={(e) => setInput(e.target.value)}
                         className="bg-transparent outline-none w-full text-gray-800 placeholder-gray-800"
                     />
                 </div>
             </div>
             <div className='flex flex-col'>
-                {filteredUsers.map((user,index)=>(
-                    <div onClick={()=>{setSelectedUser(user)}} key={index} className={`relative flex items-center gap-2 p-2 pl-4 rounded cursor-pointer max-sm:text-sm ${selectedUser?._id===user._id && 'bg-gray-300'}`}>
-                        <img src={user?.profilePic || assets.avatar_icon} alt="userpic" 
-                        className='w-8.75 aspect-square rounded-full'/>
+                {filteredUsers.map((user, index) => (
+                    <div onClick={() => { setSelectedUser(user); setUnseenMessages((prev) => ({ ...prev, [user._id]: 0 })) }} key={index} className={`relative flex items-center gap-2 p-2 pl-4 rounded cursor-pointer max-sm:text-sm ${selectedUser?._id === user._id && 'bg-gray-300'}`}>
+                        <img src={user?.profilePic || assets.avatar_icon} alt="userpic"
+                            className='w-8.75 aspect-square rounded-full' />
                         <div className='flex flex-col leading-5'>
                             <p>{user.fullName}</p>
                             {
                                 onlineUsers.includes(user._id)
-                                ? <span className=' text-green-400 text-xs'>Online</span>
-                                :<span className='text-gray-400 text-xs'>Offline</span>
+                                    ? <span className=' text-green-400 text-xs'>Online</span>
+                                    : <span className='text-gray-400 text-xs'>Offline</span>
                             }
                         </div>
-                        {unseenMessages?.[user._id] && <p className='absolute top-4 right-4 text-xs w-5 h-5 flex justify-center items-center rounded-full bg-violet-500/50'>{unseenMessages[user._id]}</p>}
+                        {Number(unseenMessages?.[user._id]) > 0 && (
+                            <p className='absolute top-4 right-4 text-xs w-5 h-5 flex justify-center items-center rounded-full bg-violet-500/50'>
+                                {unseenMessages[user._id]}
+                            </p>
+                        )}
                     </div>
                 ))}
 
