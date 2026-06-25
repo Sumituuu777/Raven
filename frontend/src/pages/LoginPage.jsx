@@ -9,19 +9,34 @@ const LoginPage = () => {
   const [password, setpassword] = useState("")
   const [bio, setbio] = useState("")
   const [isDataSubmitted, setisDataSubmitted] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const { login } = useContext(AuthContext)
 
-  const onSubmitHandler = (event) => {
-    event.preventDefault()
+  const onSubmitHandler = async (event) => {
+  event.preventDefault()
 
-    if (currentState === "Sign up" && !isDataSubmitted) {
-      setisDataSubmitted(true)
-      return
-    }
-
-    login(currentState === "Sign up" ? 'signup' : 'login', { fullName, email, password, bio })
+  // First step of signup (name/email/password)
+  if (currentState === "Sign up" && !isDataSubmitted) {
+    setisDataSubmitted(true)
+    return
   }
+
+  if (loading) return
+
+  try {
+    setLoading(true)
+
+    await login(
+      currentState === "Sign up" ? "signup" : "login",
+      { fullName, email, password, bio }
+    )
+  } catch (error) {
+    console.log(error)
+  } finally {
+    setLoading(false)
+  }
+}
 
   return (
     <div className='min-h-screen bg-cover bg-center flex items-center justify-center gap-8 sm:justify-evenly max-sm:flex-col backdrop-blur-2xl'>
@@ -60,8 +75,21 @@ const LoginPage = () => {
             rows={4} className='p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2' placeholder='Add a short bio' required></textarea>
         )}
 
-        <button type='submit' className='py-3 bg-gray-50 rounded-md cursor-pointer text-gray-500'>
-          {currentState === "Sign up" ? "Create Account" : "Login Now"}
+        <button
+          type='submit'
+          disabled={loading}
+          className={`py-3 rounded-md font-semibold transition-all ${loading
+              ? 'bg-gray-300 text-gray-400 cursor-not-allowed'
+              : 'bg-gray-50 text-gray-500 cursor-pointer'
+            }`}
+        >
+          {loading
+            ? currentState === "Sign up"
+              ? "Creating Account..."
+              : "Logging In..."
+            : currentState === "Sign up"
+              ? "Create Account"
+              : "Login Now"}
         </button>
 
         {currentState === "Sign up" && (

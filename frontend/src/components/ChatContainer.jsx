@@ -13,34 +13,59 @@ const ChatContainer = () => {
   const { authUser, onlineUsers } = useContext(AuthContext)
 
   const [input, setInput] = useState('')
+  const [sending, setSending] = useState(false)
 
   const scrollEnd = useRef();
 
   const handleSendMessage = async (e) => {
-    e.preventDefault()
+  e.preventDefault()
 
-    if (input.trim() === "") return null
-    await sendMessages({ text: input.trim() })
+  if (sending) return
+
+  const message = input.trim()
+
+  if (!message) return
+
+  try {
+    setSending(true)
+
+    await sendMessages({ text: message })
+
     setInput("")
+  } catch (error) {
+    console.log(error)
+  } finally {
+    setSending(false)
   }
+}
 
   // ---------------function to handle send image ------------------------------------------------------
   const handleSendImage = async (e) => {
-    const file = e.target.files[0]
+  if (sending) return
 
-    if (!file || !file.type.startsWith("image/")) {
-      toast.error("select an image file")
-      return;
-    }
+  const file = e.target.files[0]
 
-    const reader = new FileReader()
-    reader.onloadend = async () => {
-      await sendMessages({ image: reader.result })
-      e.target.value = ""
-    }
-
-    reader.readAsDataURL(file)
+  if (!file || !file.type.startsWith("image/")) {
+    toast.error("select an image file")
+    return
   }
+
+  const reader = new FileReader()
+
+  reader.onloadend = async () => {
+    try {
+      setSending(true)
+
+      await sendMessages({ image: reader.result })
+
+      e.target.value = ""
+    } finally {
+      setSending(false)
+    }
+  }
+
+  reader.readAsDataURL(file)
+}
 
   useEffect(() => {
     if (selectedUser) {
@@ -131,10 +156,13 @@ const ChatContainer = () => {
         </div>
 
         <img
-          onClick={handleSendMessage}
+          onClick={!sending ? handleSendMessage : undefined}
           src={assets.send_button}
           alt=""
-          className='w-6 h-6 shrink-0 cursor-pointer'
+          className={`w-6 h-6 shrink-0 ${sending
+              ? 'opacity-50 cursor-not-allowed'
+              : 'cursor-pointer'
+            }`}
         />
       </div>
     </div>

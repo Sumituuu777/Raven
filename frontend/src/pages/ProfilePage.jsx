@@ -13,8 +13,12 @@ const ProfilePage = () => {
   const [name, setName] = useState(authUser.fullName)
   const [bio, setBio] = useState(authUser.bio)
 
+  const [loading, setLoading] = useState(false);
+
   const handleSubmit = async (event) => {
     event.preventDefault()
+
+    if (loading) return;
 
     if (!selectedImg) {
       await updateProfile({ fullName: name, bio })
@@ -25,17 +29,28 @@ const ProfilePage = () => {
     const reader = new FileReader()
     reader.readAsDataURL(selectedImg)
 
-    reader.onload = async () => {
-      const base64Image = reader.result
+    try {
+      setLoading(true);
 
-      await updateProfile({
-        profilePic: base64Image,
-        fullName: name,
-        bio
-      })
+      reader.onload = async () => {
+        const base64Image = reader.result
 
-      navigate('/')
+        await updateProfile({
+          profilePic: base64Image,
+          fullName: name,
+          bio
+        })
+
+        navigate('/')
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
+
+
+
   }
 
   return (
@@ -71,9 +86,8 @@ const ProfilePage = () => {
                   : assets.avatar_icon
               }
               alt=""
-              className={`w-12 h-12 object-cover ${
-                selectedImg ? 'rounded-full' : ''
-              }`}
+              className={`w-12 h-12 object-cover ${selectedImg ? 'rounded-full' : ''
+                }`}
             />
 
             <span>Upload profile image</span>
@@ -97,10 +111,14 @@ const ProfilePage = () => {
           />
 
           <button
-            type='submit'
-            className='w-full py-3 bg-gray-50 rounded-md cursor-pointer font-semibold text-gray-500'
+            type="submit"
+            disabled={loading}
+            className={`w-full py-3 rounded-md font-semibold ${loading
+              ? "bg-gray-300 text-gray-400 cursor-not-allowed"
+              : "bg-gray-50 text-gray-500 cursor-pointer"
+              }`}
           >
-            Save
+            {loading ? "Updating..." : "Save"}
           </button>
 
         </form>
@@ -109,9 +127,8 @@ const ProfilePage = () => {
           <img
             src={authUser?.profilePic || assets.raven_logo}
             alt=""
-            className={`w-40 h-40 sm:w-52 sm:h-52 object-cover rounded-full ${
-              selectedImg ? 'rounded-full' : ''
-            }`}
+            className={`w-40 h-40 sm:w-52 sm:h-52 object-cover rounded-full ${selectedImg ? 'rounded-full' : ''
+              }`}
           />
         </div>
 
