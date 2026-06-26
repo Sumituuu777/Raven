@@ -15,44 +15,46 @@ const ProfilePage = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault()
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
     if (loading) return;
-
-    if (!selectedImg) {
-      await updateProfile({ fullName: name, bio })
-      navigate('/')
-      return
-    }
-
-    const reader = new FileReader()
-    reader.readAsDataURL(selectedImg)
 
     try {
       setLoading(true);
 
-      reader.onload = async () => {
-        const base64Image = reader.result
-
+      if (!selectedImg) {
         await updateProfile({
-          profilePic: base64Image,
           fullName: name,
-          bio
-        })
+          bio,
+        });
 
-        navigate('/')
+        navigate("/");
+        return;
       }
+
+      const profilePic = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+
+        reader.readAsDataURL(selectedImg);
+      });
+
+      await updateProfile({
+        profilePic,
+        fullName: name,
+        bio,
+      });
+
+      navigate("/");
     } catch (error) {
       console.log(error);
     } finally {
       setLoading(false);
     }
-
-
-
-  }
-
+  };
   return (
     <div className='h-screen bg-cover backdrop-blur-xs bg-no-repeat flex items-center justify-center p-2 overflow-hidden'>
 
