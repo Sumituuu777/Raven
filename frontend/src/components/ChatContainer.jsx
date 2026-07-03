@@ -89,7 +89,7 @@ const ChatContainer = () => {
       {/* header */}
       <div className='flex items-center py-3 gap-3 mx-4 border-b border-stone-500'>
 
-        <img src={selectedUser.profilePic || assets.avatar_icon} alt="" className='w-8 rounded-full' />
+        <img src={selectedUser.profilePic || assets.avatar_icon} alt="" className='w-8 aspect-square rounded-full' />
 
         <p className='flex-1 text-lg flex items-center gap-2 text-gray-800'>
           {selectedUser.fullName}
@@ -117,7 +117,7 @@ const ChatContainer = () => {
               )}
 
             <div className='text-center text-xs'>
-              <img src={msg.senderId === authUser._id ? authUser?.profilePic || assets.avatar_icon : selectedUser?.profilePic || assets.avatar_icon} alt="" className='w-7 rounded-full' />
+              <img src={msg.senderId === authUser._id ? authUser?.profilePic || assets.avatar_icon : selectedUser?.profilePic || assets.avatar_icon} alt="" className='w-7 aspect-square rounded-full' />
               <p className='text-gray-500'>{formatMessageTime(msg.createdAt)}</p>
             </div>
           </div>
