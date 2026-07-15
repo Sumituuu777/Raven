@@ -1,21 +1,29 @@
+import { extractTags } from "../lib/utils";
+import Blogs from "../Models/blog.js"
 
 
-
-//-----------------------------get create blog-------------------------------------------
-
-export const getCreateBlog =async(req, res)=>{
+export const CreateBlog = async (req, res) => {
     try {
-        
-    } catch (error) {
-        console.log(error.message)
-        res.json({ success: false, message: error.message })
-    }
-}
-//-----------------------------post create blog-------------------------------------------
+        const { title, content, coverImage } = req.body;
+        const author = req.user._id;
+        const tags = extractTags(content);
 
-export const postCreateBlog =async(req, res)=>{
-    try {
-        
+        let newblog;
+        if (!coverImage) {
+
+            newBlog = await Blogs.create({ title, content, tags, author })
+            res.json({ success: true, blog: newBlog })
+        } else {
+            console.log("Profile pic starts with:", profilePic.substring(0, 50));
+            const upload = await cloudinary.uploader.upload(coverImage, {
+                folder: "blog_covers",
+                resource_type: "image",
+            });
+
+            newBlog = await Blogs.create({ title, content, tags, author, coverImage: { url: upload.secure_url, public_id: upload.public_id } })
+            res.json({ success: true, blog: newBlog })
+        }
+
     } catch (error) {
         console.log(error.message)
         res.json({ success: false, message: error.message })
@@ -23,9 +31,9 @@ export const postCreateBlog =async(req, res)=>{
 }
 //-----------------------------get update blog-------------------------------------------
 
-export const getUpdateBlog =async(req, res)=>{
+export const getallBlogs = async (req, res) => {
     try {
-        
+
     } catch (error) {
         console.log(error.message)
         res.json({ success: false, message: error.message })
@@ -33,9 +41,9 @@ export const getUpdateBlog =async(req, res)=>{
 }
 //----------------------------- post update blog-------------------------------------------
 
-export const postUpdateBlog =async(req, res)=>{
+export const updateBlog = async (req, res) => {
     try {
-        
+
     } catch (error) {
         console.log(error.message)
         res.json({ success: false, message: error.message })
@@ -43,9 +51,9 @@ export const postUpdateBlog =async(req, res)=>{
 }
 //-----------------------------delete blog-------------------------------------------
 
-export const deleteBlog =async(req, res)=>{
+export const deleteBlog = async (req, res) => {
     try {
-        
+
     } catch (error) {
         console.log(error.message)
         res.json({ success: false, message: error.message })

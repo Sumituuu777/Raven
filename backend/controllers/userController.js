@@ -80,8 +80,8 @@ export const updateProfile = async (req, res) => {
         } else {
             console.log("Profile pic starts with:", profilePic.substring(0, 50));
             const upload = await cloudinary.uploader.upload(profilePic, {
-  resource_type: "image",
-});
+            resource_type: "image",
+            });
 
             updatedUser = await User.findByIdAndUpdate(userId, { profilePic: upload.secure_url, bio, fullName }, { returnDocument: "after" })
 

@@ -12,6 +12,8 @@ import { Server } from "socket.io";
 import userRouter from "./routes/userRoutes.js";
 import messageRouter from "./routes/messageRoutes.js";
 import cloudinary from "./lib/cloudinary.js";
+import blogrouter from "./routes/blogRoutes.js";
+import commentsrouter from "./routes/commentsRoutes.js";
 
 dotenv.config();
 
@@ -66,6 +68,8 @@ app.use("/api/status", (req, res) => {
 // Routes
 app.use("/api/auth", userRouter);
 app.use("/api/messages", messageRouter);
+app.use("/api/blogs", blogrouter);
+app.use("/api/comments", commentsrouter);
 
 
 // Database Connection
