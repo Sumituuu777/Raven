@@ -9,7 +9,7 @@ import toast from 'react-hot-toast';
 
 const ChatContainer = () => {
 
-  const { messages, selectedUser, setSelectedUser, sendMessages, getMessages } = useContext(ChatContext)
+  const { messages, selectedUser, setSelectedUser, sendMessages, getMessages,setActiveView } = useContext(ChatContext)
   const { authUser, onlineUsers } = useContext(AuthContext)
 
   const [input, setInput] = useState('')
@@ -97,7 +97,10 @@ const ChatContainer = () => {
 
         </p>
 
-        <img onClick={() => setSelectedUser(null)} src={assets.arrow_icon} alt="" className='md:hidden max-w-7' />
+        <img onClick={() => {
+          setSelectedUser(null)
+          setActiveView("users")
+        }} src={assets.arrow_icon} alt="" className='md:hidden max-w-7' />
 
         <HiOutlineInformationCircle
           size={22}

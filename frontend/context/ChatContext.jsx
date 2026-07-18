@@ -9,6 +9,7 @@ export const ChatProvider=({children})=>{
     const [users,setUsers]=useState([])
     const [messages,setMessages]=useState([])
     const [selectedUser,setSelectedUser]=useState(null)
+    const [activeView, setActiveView] = useState("blogs");
     const [unseenMessages,setUnseenMessages]=useState({})
 
     const {socket,axios} =useContext(AuthContext)
@@ -85,7 +86,7 @@ export const ChatProvider=({children})=>{
     },[socket,selectedUser])
 
     const value={
-        messages,users,selectedUser,getUsers,setMessages,getMessages,sendMessages,setSelectedUser,unseenMessages,setUnseenMessages
+        messages,users,selectedUser,getUsers,setMessages,getMessages,sendMessages,setSelectedUser,unseenMessages,setUnseenMessages,activeView,setActiveView
     }
 
     return (

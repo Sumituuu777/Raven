@@ -15,7 +15,9 @@ const Sidebar = () => {
         setSelectedUser,
         users,
         unseenMessages,
-        setUnseenMessages
+        setUnseenMessages,
+        setActiveView,
+        activeView
     } = useContext(ChatContext)
 
     const { logout, onlineUsers } = useContext(AuthContext)
@@ -129,6 +131,7 @@ const Sidebar = () => {
                             key={index}
                             onClick={() => {
                                 setSelectedUser(user)
+                                setActiveView("chat")
                                 setUnseenMessages((prev) => ({
                                     ...prev,
                                     [user._id]: 0
@@ -172,7 +175,10 @@ const Sidebar = () => {
             {/* ================= BLOGS BUTTON (Fixed) ================= */}
             <div className="shrink-0 p-3 border-t border-gray-200 bg-white">
                 <button
-                    onClick={() => navigate("/blogs")}
+                    onClick={() =>{
+                        setSelectedUser(null);
+                        setActiveView("blogs");
+                    }}
                     className="w-full py-3 rounded-xl bg-linear-to-r from-violet-500 to-violet-600 text-white font-semibold shadow-lg hover:from-violet-600 hover:to-violet-700 transition-all duration-200"
                 >
                     📖 Blogs
