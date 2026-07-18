@@ -1,11 +1,18 @@
 import React, { useContext } from "react";
+import { useContext, useState } from "react";
+import BlogEditor from "./BlogEditor";
 import { HiOutlinePencilAlt } from "react-icons/hi";
 import assets from "../assets/assets";
 import { ChatContext } from "../../context/ChatContext";
+import { AuthContext } from "../../context/authContext";
+import { BlogContext } from "../../context/blogContext";
 
 const BlogContainer = () => {
 
-    const { selectedUser, activeView, setActiveView } = useContext(ChatContext)
+    const { activeView, setActiveView } = useContext(ChatContext)
+    const { authUser } = useContext(AuthContext)
+    const { blogs,setBlogs, setCreateBlogState, createBlogState } = useContext(BlogContext)
+    const [editingBlog, setEditingBlog] = useState(null);
     // Temporary data
     const blogs = [
         {
@@ -62,8 +69,8 @@ const BlogContainer = () => {
                 </h2>
 
                 {/* Write button */}
-                <button
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-violet-500 to-violet-600 text-white hover:opacity-90 transition"
+                <button onClick={()=>setCreateBlogState("create")}
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-linear-to-r from-violet-500 to-violet-600 text-white hover:opacity-90 transition"
                 >
                     <HiOutlinePencilAlt size={18} />
                     <span className="max-sm:hidden">Write</span>
@@ -94,13 +101,6 @@ const BlogContainer = () => {
                     </div>
                 ))}
 
-            </div>
-
-            {/* Footer */}
-            <div className="border-t border-gray-300 px-5 py-3 shrink-0 bg-white">
-                <button className="w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-violet-400 to-violet-500 hover:from-violet-500 hover:to-violet-600 transition">
-                    Explore More Blogs
-                </button>
             </div>
 
         </div>

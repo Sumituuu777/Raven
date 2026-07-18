@@ -31,10 +31,10 @@ const HomePage = () => {
           </div>
 
           <div className="w-3/5 min-h-0">
-            {activeView === "chat" ? (
-              <ChatContainer />
-            ) : (
+            {activeView !== "chat" ? (
               <BlogContainer />
+            ) : (
+              <ChatContainer />
             )}
           </div>
         </div>
