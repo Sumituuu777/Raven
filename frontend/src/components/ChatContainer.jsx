@@ -113,7 +113,7 @@ const ChatContainer = () => {
               msg.image ? (
                 <img src={msg.image} alt="" className='max-w-57.5 border border-gray-700 rounded-lg overflow-hidden mb-8' />
               ) : (
-                <p className={`p-2 max-w-50 md:text-sm font-light rounded-lg mb-8 break-all bg-violet-500 text-white ${msg.senderId !== authUser._id ? 'rounded-br-none' : 'rounded-bl-none'}`}>{msg.text}</p>
+                <p className={`p-2 max-w-50 md:text-sm font-light rounded-lg mb-8 break-all bg-linear-to-r from-violet-500 to-violet-600 text-white ${msg.senderId !== authUser._id ? 'rounded-bl-none' : 'rounded-br-none'}`}>{msg.text}</p>
               )}
 
             <div className='text-center text-xs'>
@@ -168,7 +168,7 @@ const ChatContainer = () => {
     </div>
   ) : (
     // user not selected not rendering chat area just showing chat logo 
-    <div className='flex flex-col items-center justify-center gap-2 text-gray-500 max-md:hidden'>
+    <div className='h-full flex flex-col items-center justify-center gap-2 text-gray-500 max-md:hidden'>
       <img src={assets.logo_icon} alt="" className='max-w-16' />
       <p className='text-lg font-medium text-gray-800' >Chat anytime,anywhere</p>
     </div>

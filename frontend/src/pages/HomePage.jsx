@@ -10,22 +10,27 @@ const HomePage = () => {
   return (
     <div className='h-screen flex items-center justify-center p-2 sm:px-[10%] sm:py-[3%] overflow-hidden'>
 
-  <div className='backdrop-blur-xl border-2 border-gray-600 rounded-2xl overflow-hidden h-[95dvh] w-full md:h-full md:grid md:grid-cols-[2fr_3fr]'>
+      <div className='backdrop-blur-xl border-2 border-gray-600 rounded-2xl overflow-hidden h-[95dvh] w-full md:h-full'>
 
-    {/* Mobile */}
-    <div className='md:hidden h-full'>
-      {selectedUser ? <ChatContainer /> : <Sidebar />}
+        {/* Mobile */}
+        <div className='md:hidden h-full'>
+          {selectedUser ? <ChatContainer /> : <Sidebar />}
+        </div>
+
+        {/* Desktop */}
+        <div className="hidden md:flex md:h-full md:col-span-2">
+          <div className="w-2/5 min-h-0 border-r border-gray-300">
+            <Sidebar />
+          </div>
+
+          <div className="w-3/5 min-h-0">
+            <ChatContainer />
+          </div>
+        </div>
+
+      </div>
+
     </div>
-
-    {/* Desktop */}
-    <div className='hidden md:contents'>
-      <Sidebar />
-      <ChatContainer />
-    </div>
-
-  </div>
-
-</div>
   )
 }
 

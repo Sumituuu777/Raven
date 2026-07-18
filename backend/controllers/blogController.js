@@ -1,4 +1,4 @@
-import { extractTags } from "../lib/utils";
+import { extractTags } from "../lib/utils.js";
 import Blogs from "../Models/blog.js"
 import cloudinary from "../lib/cloudinary.js"
 import { io, userSocketMap } from "../app.js";
