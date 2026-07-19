@@ -91,7 +91,7 @@ export const updateBlog = async (req, res) => {
         if (!coverImage) {
 
             updatedBlog = await Blogs.findByIdAndUpdate(blogId, { title, content, tags }, { returnDocument: "after" }).populate("author", "fullName profilePic")
-            return res.json({ success: true, blog: updatedBlog })
+            return res.json({ success: true, blog: updatedBlog,message: "Blog updated successfully" })
 
         } else {
 
@@ -109,7 +109,7 @@ export const updateBlog = async (req, res) => {
                 await cloudinary.uploader.destroy(oldBlog.coverImage.public_id);
             }
 
-            return res.json({ success: true, blog: updatedBlog })
+            return res.json({ success: true, blog: updatedBlog, message: "Blog updated successfully" })
         }
 
     } catch (error) {

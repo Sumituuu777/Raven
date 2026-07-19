@@ -49,6 +49,7 @@ const AddBlog = () => {
                 }
 
                 setEditingBlog(null);
+                setCreateBlogState("blogList");
             };
 
             if (coverImage) {
