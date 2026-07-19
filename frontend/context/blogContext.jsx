@@ -104,9 +104,8 @@ export const BlogProvider = ({ children }) => {
                 toast.success(data.message);
 
                 setBlogs(prev=>
-                    prev.map(blog=>{
-                        console.log(data.blog);
-                        blog._id===blogId ? data.blog: blog}
+                    prev.map(blog=>
+                        blog._id===blogId ? data.blog: blog
                     )
                 )
             }else{
