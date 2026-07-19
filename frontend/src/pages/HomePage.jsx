@@ -31,7 +31,7 @@ const HomePage = () => {
           </div>
 
           <div className="w-3/5 min-h-0">
-            {activeView !== "chat" ? (
+            {activeView === "blogs" ? (
               <BlogContainer />
             ) : (
               <ChatContainer />

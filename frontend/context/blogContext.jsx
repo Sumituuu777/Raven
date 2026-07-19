@@ -7,9 +7,9 @@ export const BlogContext = createContext();
 export const BlogProvider = ({ children }) => {
     const [blogs, setBlogs] = useState([]);
     const [createBlogState, setCreateBlogState] = useState("blogList");
-    
-    // Pull the active socket connection from your AuthContext
     const { socket, axios } = useContext(AuthContext);
+
+    //---------------------------------------get Blogs ------------------------------------------------------
 
     const getBlogs = async () => {
         try {
@@ -22,7 +22,7 @@ export const BlogProvider = ({ children }) => {
         }
     };
 
-    // Listen for real-time updates from other users
+    // Listen for real-time updates from other users----------------------------------------------------------------------------
     useEffect(() => {
         if (!socket) return;
 
@@ -40,6 +40,7 @@ export const BlogProvider = ({ children }) => {
         };
     }, [socket]); // Re-run if the socket instance changes (e.g., user logs out/in)
 
+    //--------------------------------------------------------------------------------------------------------------------------------
     const createBlog = async (blogData) => {
         try {
             const { data } = await axios.post("/api/blogs/createBlog", blogData);
@@ -56,25 +57,43 @@ export const BlogProvider = ({ children }) => {
             toast.error(error.message);
         }
     };
+//-------------------------------------toggle like----------------------------------------
     const toggleLike = async (blogId) => {
-    try {
-        const { data } = await axios.put(`/api/blogs/toggleLike/${blogId}`);
+        try {
+            const { data } = await axios.put(`/api/blogs/toggleLike/${blogId}`);
 
-        if (!data.success) {
-            return toast.error(data.message);
+            if (!data.success) {
+                return toast.error(data.message);
+            }
+
+            setBlogs(prev =>
+                prev.map(blog =>
+                    blog._id === blogId ? data.blog : blog
+                )
+            );
+
+        } catch (error) {
+            toast.error(error.message);
         }
+    };
+//--------------------------------------------delete Blog--------------------------------------------------------
 
-        setBlogs(prev =>
-            prev.map(blog =>
-                blog._id === blogId ? data.blog : blog
-            )
-        );
+    const deleteBlog = async (blogId) => {
+        try {
+            const { data } = await axios.delete(`/api/blogs/deleteBlog/${blogId}`);
 
-    } catch (error) {
-        toast.error(error.message);
-    }
-};
+            if (!data.success) {
+                return toast.error(data.message);
+            }
 
-    const value = { blogs, setBlogs, getBlogs, createBlog, createBlogState, setCreateBlogState,toggleLike };
+            setBlogs(prev => prev.filter(blog => blog._id !== blogId));
+
+            toast.success(data.message);
+
+        } catch (error) {
+            toast.error(error.message);
+        }
+    };
+    const value = { blogs, setBlogs, getBlogs, createBlog, createBlogState, setCreateBlogState,toggleLike,deleteBlog };
     return <BlogContext.Provider value={value}>{children}</BlogContext.Provider>;
 };

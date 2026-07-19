@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import { useState } from "react";
-import { HiOutlinePencilAlt, HiOutlineEye, HiOutlineHeart, HiHeart } from "react-icons/hi";
+import { HiOutlinePencilAlt, HiOutlineEye, HiOutlineHeart, HiHeart, HiOutlineChatAlt2, HiOutlineTrash } from "react-icons/hi";
 import assets from "../assets/assets";
 import { ChatContext } from "../../context/ChatContext";
 import { AuthContext } from "../../context/authContext";
@@ -10,7 +10,7 @@ const BlogList = () => {
     const { activeView, setActiveView } = useContext(ChatContext);
     const { authUser } = useContext(AuthContext);
 
-    const { blogs, getBlogs, setCreateBlogState,toggleLike } = useContext(BlogContext);
+    const { blogs, getBlogs, setCreateBlogState, toggleLike,deleteBlog } = useContext(BlogContext);
     const [editingBlog, setEditingBlog] = useState(null);
 
     useEffect(() => {
@@ -94,7 +94,7 @@ const BlogList = () => {
 
                                 <div className="flex justify-between items-center pt-3 border-t border-gray-100 text-xs font-medium">
                                     {/* Left Side: Author Info */}
-                                    <span className="flex items-center gap-2 text-gray-500">
+                                    <span className="flex items-center gap-2">
                                         {blog.author?.profilePic ? (
                                             <img
                                                 src={blog.author.profilePic}
@@ -103,24 +103,28 @@ const BlogList = () => {
                                             />
                                         ) : (
                                             <div className="w-7 h-7 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center font-semibold text-[15px]">
-                                                {blog.author?.fullName ? blog.author.fullName.charAt(0).toUpperCase() : "A"}
+                                                {blog.author?.fullName
+                                                    ? blog.author.fullName.charAt(0).toUpperCase()
+                                                    : "A"}
                                             </div>
                                         )}
-                                        <span className="text-gray-700 font-semibold">
-                                            {blog.author?.fullName || "Anonymous Author"}
-                                        </span>
+
+                                        <div className="flex flex-col">
+                                            <span className="text-gray-700 font-semibold">
+                                                {blog.author?.fullName || "Anonymous Author"}
+                                            </span>
+
+                                            <span className="text-xs text-gray-500">
+                                                {formatDate(blog.createdAt)}
+                                            </span>
+                                        </div>
                                     </span>
 
                                     {/* Right Side: Views & Likes */}
                                     <div className="flex items-center gap-4 text-gray-500">
-                                        <div
-                                            className="flex items-center gap-1.5 "
-                                        >
-                                            <HiOutlineEye className="w-5 h-5" />
-                                            <span>{blog.views}</span>
-                                        </div>
+
                                         {/* Clickable Likes Button */}
-                                        <button onClick={()=>toggleLike(blog._id)}
+                                        <button onClick={() => toggleLike(blog._id)}
                                             className={`flex items-center gap-1.5 active:scale-95 transition-transform cursor-pointer font-semibold ${blog.likes.includes(authUser._id) ? 'text-violet-500 hover:text-violet-600' : 'hover:text-violet-500'
                                                 }`}
                                         >
@@ -131,7 +135,38 @@ const BlogList = () => {
                                             )}
                                             <span>{blog.likes.length}</span>
                                         </button>
-                                        <span>{formatDate(blog.createdAt)}</span>
+
+                                        <div
+                                            className="flex items-center gap-1.5 "
+                                        >
+                                            <HiOutlineChatAlt2 className="w-5 h-5" />
+                                            <span>{blog.views}</span>
+                                        </div>
+
+                                        {/* <span>{formatDate(blog.createdAt)}</span> */}
+
+                                        {blog.author?._id?.toString() === authUser._id.toString() &&
+
+                                            <button
+                                                onClick={() => editBlog(blog._id)}
+                                                className="flex items-center gap-2 px-3 py-2 rounded-lg text-violet-500 hover:bg-violet-50 hover:text-violet-600 transition cursor-pointer"
+                                            >
+                                                <HiOutlinePencilAlt className="w-5 h-5" />
+                                                <span className="max-sm:hidden">Edit</span>
+                                            </button>
+
+                                        }
+                                        {blog.author?._id?.toString() === authUser._id.toString() &&
+
+                                            <button
+                                                onClick={() => deleteBlog(blog._id)}
+                                                className="flex items-center gap-2 px-3 py-2 rounded-lg text-red-500 hover:bg-red-50 hover:text-red-600 transition cursor-pointer"
+                                            >
+                                                <HiOutlineTrash className="w-5 h-5" />
+                                                <span className="max-sm:hidden">Delete</span>
+                                            </button>
+
+                                        }
                                     </div>
                                 </div>
                                 <div>
