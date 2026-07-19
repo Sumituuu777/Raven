@@ -49,7 +49,7 @@ const LoginPage = () => {
             <img
                 src={assets.raven_logo}
                 alt=""
-                className="w-86 mb-8"
+                className="w-96 mb-8 rounded-lg"
             />
 
             <h1 className="text-4xl font-bold">
