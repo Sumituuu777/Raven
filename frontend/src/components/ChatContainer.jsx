@@ -9,7 +9,7 @@ import toast from 'react-hot-toast';
 
 const ChatContainer = () => {
 
-  const { messages, selectedUser, setSelectedUser, sendMessages, getMessages } = useContext(ChatContext)
+  const { messages, selectedUser, setSelectedUser, sendMessages, getMessages,setActiveView } = useContext(ChatContext)
   const { authUser, onlineUsers } = useContext(AuthContext)
 
   const [input, setInput] = useState('')
@@ -88,8 +88,13 @@ const ChatContainer = () => {
 
       {/* header */}
       <div className='flex items-center py-3 gap-3 mx-4 border-b border-stone-500'>
-
-        <img src={selectedUser.profilePic || assets.avatar_icon} alt="" className='w-8 aspect-square rounded-full' />
+        {selectedUser.profilePic ? (
+          <img src={selectedUser.profilePic || assets.avatar_icon} alt="" className='w-8 aspect-square rounded-full' />
+        ):(
+          <div className="w-8.75 aspect-square rounded-full bg-violet-100 text-violet-600 flex items-center justify-center font-semibold text-[20px]">
+            {selectedUser?.fullName? selectedUser.fullName.charAt(0).toUpperCase() : "A"}
+          </div>
+        )}
 
         <p className='flex-1 text-lg flex items-center gap-2 text-gray-800'>
           {selectedUser.fullName}
@@ -97,7 +102,10 @@ const ChatContainer = () => {
 
         </p>
 
-        <img onClick={() => setSelectedUser(null)} src={assets.arrow_icon} alt="" className='md:hidden max-w-7' />
+        <img onClick={() => {
+          setSelectedUser(null)
+          setActiveView("users")
+        }} src={assets.arrow_icon} alt="" className='md:hidden max-w-7' />
 
         <HiOutlineInformationCircle
           size={22}
@@ -113,7 +121,7 @@ const ChatContainer = () => {
               msg.image ? (
                 <img src={msg.image} alt="" className='max-w-57.5 border border-gray-700 rounded-lg overflow-hidden mb-8' />
               ) : (
-                <p className={`p-2 max-w-50 md:text-sm font-light rounded-lg mb-8 break-all bg-violet-500 text-white ${msg.senderId !== authUser._id ? 'rounded-br-none' : 'rounded-bl-none'}`}>{msg.text}</p>
+                <p className={`p-2 max-w-50 md:text-sm font-light rounded-lg mb-8 break-all bg-linear-to-r from-violet-500 to-violet-600 text-white ${msg.senderId !== authUser._id ? 'rounded-bl-none' : 'rounded-br-none'}`}>{msg.text}</p>
               )}
 
             <div className='text-center text-xs'>
@@ -168,7 +176,7 @@ const ChatContainer = () => {
     </div>
   ) : (
     // user not selected not rendering chat area just showing chat logo 
-    <div className='flex flex-col items-center justify-center gap-2 text-gray-500 max-md:hidden'>
+    <div className='h-full flex flex-col items-center justify-center gap-2 text-gray-500 max-md:hidden'>
       <img src={assets.logo_icon} alt="" className='max-w-16' />
       <p className='text-lg font-medium text-gray-800' >Chat anytime,anywhere</p>
     </div>
