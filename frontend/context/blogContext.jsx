@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { createContext } from "react";
 import toast from "react-hot-toast";
+import { AuthContext } from "./authContext";
 
 export const BlogContext = createContext()
 
 export const BlogProvider = ({ children }) => {
 
     const [blogs, setBlogs] = useState([]);
-    const [createBlogState, setCreateBlogState] = useState("notCreate");
+    const [createBlogState, setCreateBlogState] = useState("blogList");
     const { socket, axios } = useContext(AuthContext)
 
     const getBlogs = async () => {

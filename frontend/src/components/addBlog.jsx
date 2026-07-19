@@ -4,7 +4,7 @@ import { BlogContext } from "../../context/blogContext";
 
 const AddBlog = () => {
 
-    const { createBlog} = useContext(BlogContext)
+    const { createBlogState, setCreateBlogState} = useContext(BlogContext)
 
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
@@ -32,7 +32,7 @@ const AddBlog = () => {
 
                 <img
                     src={assets.arrow_icon}
-                    onClick={onBack}
+                    onClick={()=>setCreateBlogState("blogList")}
                     className="w-7 cursor-pointer"
                     alt=""
                 />
