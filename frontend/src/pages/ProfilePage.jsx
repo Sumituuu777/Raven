@@ -56,95 +56,121 @@ const ProfilePage = () => {
     }
   };
   return (
-    <div className='h-screen bg-cover backdrop-blur-xs bg-no-repeat flex items-center justify-center p-2 overflow-hidden'>
+    <div className='h-screen flex items-center justify-center p-2 sm:px-[10%] sm:py-[3%] overflow-hidden'>
+    <div className='backdrop-blur-xl border-2 border-gray-600 rounded-2xl overflow-hidden h-[95dvh] w-full md:h-full'>
+    <div className="h-full flex flex-col bg-gray-200">
 
-      <div className='w-[95%] max-w-2xl h-[95dvh] bg-gray-500 backdrop-blur-2xl text-white border-2 border-gray-700 rounded-lg overflow-y-auto flex flex-col-reverse sm:flex-row items-center'>
-
-        <form
-          onSubmit={handleSubmit}
-          className='flex flex-col gap-5 p-6 md:p-8 flex-1 w-full min-w-0'
-        >
-
-          <h3 className='text-lg font-semibold'>
-            Profile details
-          </h3>
-
-          <label
-            htmlFor="avatar"
-            className='flex items-center gap-3 cursor-pointer flex-wrap'
-          >
-            <input
-              onChange={(e) => setSelectedImg(e.target.files[0])}
-              type="file"
-              id="avatar"
-              accept='.png,.jpg,.jpeg'
-              hidden
-            />
-
-            <img
-              src={
-                selectedImg
-                  ? URL.createObjectURL(selectedImg)
-                  : assets.avatar_icon
-              }
-              alt=""
-              className={`w-12 h-12 object-cover ${selectedImg ? 'rounded-full' : ''
-                }`}
-            />
-
-            <span>Upload profile image</span>
-          </label>
-
-          <input
-            onChange={(e) => setName(e.target.value)}
-            value={name}
-            type="text"
-            required
-            placeholder='Your Name'
-            className='w-full p-2 border border-gray-700 rounded-md focus:outline-none focus:ring-2 text-white'
-          />
-
-          <textarea
-            onChange={(e) => setBio(e.target.value)}
-            value={bio}
-            placeholder='Add profile bio'
-            rows={4}
-            className='w-full p-2 border border-gray-700 rounded-md focus:outline-none focus:ring-2 text-white resize-none'
-          />
-
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full py-3 rounded-md font-semibold ${loading
-              ? "bg-gray-300 text-gray-400 cursor-not-allowed"
-              : "bg-gray-50 text-gray-500 cursor-pointer"
-              }`}
-          >
-            {loading ? "Updating..." : "Save"}
-          </button>
-
-        </form>
-
-        <div className='flex justify-center items-center p-6 sm:p-8'>
-          {authUser?.profilePic ?(
-
-            <img
-              src={authUser?.profilePic || assets.raven_logo}
-              alt=""
-              className={`w-40 h-40 sm:w-52 sm:h-52 object-cover rounded-full ${selectedImg ? 'rounded-full' : ''
-                }`}
-            />
-
-          ):(
-            <div className="w-40 h-40 sm:w-52 sm:h-52 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center font-semibold text-[100px]">
-              {authUser.fullName.charAt(0).toUpperCase()}
-            </div>
-          )}
-        </div>
-
-      </div>
-
+    {/* Header */}
+    <div className="flex items-center gap-3 py-3 mx-4 border-b border-stone-500 shrink-0">
+        <img
+            src={assets.arrow_icon}
+            onClick={() => navigate("/")}
+            className="w-7 cursor-pointer"
+            alt=""
+        />
+        <h2 className="text-xl font-semibold flex-1">
+            Edit Profile
+        </h2>
     </div>
+
+    <div className="flex-1 overflow-y-auto p-6">
+        <div className="max-w-5xl mx-auto bg-white rounded-2xl border border-gray-200 shadow-sm p-8">
+
+            <div className="flex flex-col lg:flex-row gap-10">
+
+                {/* Left */}
+                <div className="flex flex-col items-center lg:w-72">
+
+                    {selectedImg ? (
+                        <img
+                            src={URL.createObjectURL(selectedImg)}
+                            className="w-44 h-44 rounded-full object-cover ring-4 ring-violet-100"
+                            alt=""
+                        />
+                    ) : authUser?.profilePic ? (
+                        <img
+                            src={authUser.profilePic}
+                            className="w-44 h-44 rounded-full object-cover ring-4 ring-violet-100"
+                            alt=""
+                        />
+                    ) : (
+                        <div className="w-44 h-44 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center text-9xl font-semibold ring-4 ring-violet-100">
+                            {authUser.fullName.charAt(0).toUpperCase()}
+                        </div>
+                    )}
+
+                    <label
+                        htmlFor="avatar"
+                        className="mt-5 cursor-pointer text-sm font-medium text-violet-600 hover:text-violet-700 transition"
+                    >
+                        Change Profile Photo
+                    </label>
+
+                    <input
+                        hidden
+                        id="avatar"
+                        type="file"
+                        accept=".png,.jpg,.jpeg"
+                        onChange={(e) => setSelectedImg(e.target.files[0])}
+                    />
+                </div>
+
+                {/* Right */}
+                <form
+                    onSubmit={handleSubmit}
+                    className="flex-1 space-y-6"
+                >
+
+                    <div>
+                        <label className="block mb-2 text-sm font-semibold text-gray-700">
+                            Full Name
+                        </label>
+
+                        <input
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            type="text"
+                            required
+                            placeholder="Your Name"
+                            className="w-full border border-gray-300 rounded-xl px-4 py-3 bg-white text-gray-900 outline-none transition-all focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block mb-2 text-sm font-semibold text-gray-700">
+                            Bio
+                        </label>
+
+                        <textarea
+                            value={bio}
+                            onChange={(e) => setBio(e.target.value)}
+                            rows={6}
+                            placeholder="Tell everyone about yourself..."
+                            className="w-full border border-gray-300 rounded-xl px-4 py-3 resize-none bg-white text-gray-900 outline-none transition-all focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20"
+                        />
+                    </div>
+
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className={`w-full py-3.5 rounded-xl text-white font-semibold shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 ${
+                            loading
+                                ? "bg-violet-400 cursor-not-allowed opacity-80"
+                                : "bg-linear-to-r from-violet-600 to-violet-700 hover:from-violet-700 hover:to-violet-800 cursor-pointer"
+                        }`}
+                    >
+                        {loading ? "Saving Changes..." : "Save Changes"}
+                    </button>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>
+</div>
   )
 }
 

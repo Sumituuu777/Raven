@@ -89,9 +89,9 @@ const ChatContainer = () => {
       {/* header */}
       <div className='flex items-center py-3 gap-3 mx-4 border-b border-stone-500'>
         {selectedUser.profilePic ? (
-          <img src={selectedUser.profilePic || assets.avatar_icon} alt="" className='w-8 aspect-square rounded-full' />
+          <img src={selectedUser.profilePic || assets.avatar_icon} alt="" className='w-10 aspect-square rounded-full' />
         ):(
-          <div className="w-8.75 aspect-square rounded-full bg-violet-100 text-violet-600 flex items-center justify-center font-semibold text-[20px]">
+          <div className="w-10 aspect-square rounded-full bg-violet-100 text-violet-600 flex items-center justify-center font-semibold text-[20px]">
             {selectedUser?.fullName? selectedUser.fullName.charAt(0).toUpperCase() : "A"}
           </div>
         )}
@@ -125,7 +125,33 @@ const ChatContainer = () => {
               )}
 
             <div className='text-center text-xs'>
-              <img src={msg.senderId === authUser._id ? authUser?.profilePic || assets.avatar_icon : selectedUser?.profilePic || assets.avatar_icon} alt="" className='w-7 aspect-square rounded-full' />
+              {msg.senderId === authUser._id ? (
+                authUser?.profilePic ? (
+                  <img
+                    src={authUser.profilePic}
+                    alt=""
+                    className="w-7 aspect-square rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-7 aspect-square rounded-full bg-violet-100 text-violet-600 flex items-center justify-center font-semibold text-sm">
+                    {authUser?.fullName
+                      ? authUser.fullName.charAt(0).toUpperCase()
+                      : "A"}
+                  </div>
+                )
+              ) : selectedUser?.profilePic ? (
+                <img
+                  src={selectedUser.profilePic}
+                  alt=""
+                  className="w-7 aspect-square rounded-full object-cover"
+                />
+              ) : (
+                <div className="w-7 aspect-square rounded-full bg-violet-100 text-violet-600 flex items-center justify-center font-semibold text-sm">
+                  {selectedUser?.fullName
+                    ? selectedUser.fullName.charAt(0).toUpperCase()
+                    : "A"}
+                </div>
+              )}
               <p className='text-gray-500'>{formatMessageTime(msg.createdAt)}</p>
             </div>
           </div>

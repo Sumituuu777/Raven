@@ -39,85 +39,197 @@ const LoginPage = () => {
 }
 
   return (
-    <div className='min-h-screen bg-cover bg-center flex items-center justify-center gap-8 sm:justify-evenly max-sm:flex-col backdrop-blur-2xl'>
-      {/* ---------------left --------------*/}
-      <img src={assets.raven_logo} alt="" className='w-28 sm:w-[min(30vw,250px)]' />
+    <div className="min-h-screen bg-gray-200 flex items-center justify-center p-6">
 
-      {/*-------------------right------------- */}
-      <form
-        onSubmit={onSubmitHandler}
-        className='w-[92%] sm:w-full max-w-sm border-2 bg-gray-500 text-white border-gray-600 p-6 flex flex-col gap-6 rounded-xl shadow-lg'
-      >
-        <h2 className='flex justify-between font-medium text-2xl items-center'>
-          {currentState}
-          {isDataSubmitted && <img onClick={() => setisDataSubmitted(false)}
-            src={assets.arrow_icon} alt="" className='w-5 cursor-pointer' />}
+    <div className="w-full max-w-5xl bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex flex-col md:flex-row">
 
-        </h2>
+        {/* Left Section */}
+        <div className="hidden md:flex md:w-1/2 bg-linear-to-br from-violet-500 to-violet-700 text-white flex-col items-center justify-center p-10">
 
-        {currentState === "Sign up" && !isDataSubmitted && (
-          <input onChange={(e) => setFullName(e.target.value)} value={fullName}
-            type="text" className='p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2' placeholder='Full Name' required />
-        )}
+            <img
+                src={assets.raven_logo}
+                alt=""
+                className="w-86 mb-8"
+            />
 
-        {!isDataSubmitted && (
-          <>
-            <input onChange={(e) => setemail(e.target.value)} value={email}
-              type="email" className='p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2' placeholder='Email' required />
+            <h1 className="text-4xl font-bold">
+                Welcome to Raven
+            </h1>
 
-            <input onChange={(e) => setpassword(e.target.value)} value={password}
-              type="password" className='p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2' placeholder='Password' required />
-          </>
-        )}
-
-        {currentState === "Sign up" && isDataSubmitted && (
-          <textarea onChange={(e) => setbio(e.target.value)} value={bio}
-            rows={4} className='p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2' placeholder='Add a short bio' required></textarea>
-        )}
-
-        <button
-          type='submit'
-          disabled={loading}
-          className={`py-3 rounded-md font-semibold transition-all ${loading
-              ? 'bg-gray-300 text-gray-400 cursor-not-allowed'
-              : 'bg-gray-50 text-gray-500 cursor-pointer'
-            }`}
-        >
-          {loading
-            ? currentState === "Sign up"
-              ? "Creating Account..."
-              : "Logging In..."
-            : currentState === "Sign up"
-              ? "Create Account"
-              : "Login Now"}
-        </button>
-
-        {currentState === "Sign up" && (
-          <div className='flex items-center text-sm gap-2 text-gray-800'>
-            <input type="checkbox" className='' required />
-            <p>Agree to the terms of use & privacy policy</p>
-          </div>
-        )}
-
-        <div className='flex flex-col gap-2'>
-          {currentState === "Sign up" ? (
-            <p className='text-sm text-indigo-100'>Already have an account ?
-              <span onClick={() => { setCurrentState("Login"); setisDataSubmitted(false) }}
-                className='font-medium text-blue-700 cursor-pointer ml-1'>
-                Login here
-              </span>
+            <p className="mt-4 text-center text-violet-100 leading-relaxed max-w-sm">
+                Connect with friends, chat in real-time and share your thoughts through beautiful blogs.
             </p>
-          ) : (
-            <p className='text-sm text-indigo-100'>Create an account
-              <span onClick={() => setCurrentState("Sign up")}
-                className='font-medium text-blue-700 cursor-pointer ml-1'>
-                click here
-              </span>
-            </p>
-          )}
+
         </div>
-      </form>
+
+        {/* Right Section */}
+        <div className="flex-1 p-8 md:p-10">
+
+            <form
+                onSubmit={onSubmitHandler}
+                className="space-y-6"
+            >
+
+                <div className="flex items-center justify-between">
+
+                    <h2 className="text-3xl font-bold text-gray-800">
+                        {currentState}
+                    </h2>
+
+                    {isDataSubmitted && (
+                        <img
+                            src={assets.arrow_icon}
+                            onClick={() => setisDataSubmitted(false)}
+                            className="w-6 cursor-pointer"
+                            alt=""
+                        />
+                    )}
+
+                </div>
+
+                {currentState === "Sign up" && !isDataSubmitted && (
+
+                    <div>
+                        <label className="block mb-2 text-sm font-semibold text-gray-700">
+                            Full Name
+                        </label>
+
+                        <input
+                            value={fullName}
+                            onChange={(e) => setFullName(e.target.value)}
+                            type="text"
+                            placeholder="John Doe"
+                            required
+                            className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none transition-all focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20"
+                        />
+                    </div>
+
+                )}
+
+                {!isDataSubmitted && (
+                    <>
+
+                        <div>
+                            <label className="block mb-2 text-sm font-semibold text-gray-700">
+                                Email
+                            </label>
+
+                            <input
+                                value={email}
+                                onChange={(e) => setemail(e.target.value)}
+                                type="email"
+                                placeholder="john@example.com"
+                                required
+                                className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none transition-all focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block mb-2 text-sm font-semibold text-gray-700">
+                                Password
+                            </label>
+
+                            <input
+                                value={password}
+                                onChange={(e) => setpassword(e.target.value)}
+                                type="password"
+                                placeholder="••••••••"
+                                required
+                                className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none transition-all focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20"
+                            />
+                        </div>
+
+                    </>
+                )}
+
+                {currentState === "Sign up" && isDataSubmitted && (
+
+                    <div>
+                        <label className="block mb-2 text-sm font-semibold text-gray-700">
+                            Bio
+                        </label>
+
+                        <textarea
+                            value={bio}
+                            onChange={(e) => setbio(e.target.value)}
+                            rows={5}
+                            placeholder="Tell everyone a little about yourself..."
+                            required
+                            className="w-full border border-gray-300 rounded-xl px-4 py-3 resize-none outline-none transition-all focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20"
+                        />
+                    </div>
+
+                )}
+
+                <button
+                    type="submit"
+                    disabled={loading}
+                    className={`w-full py-3.5 rounded-xl text-white font-semibold shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 ${
+                        loading
+                            ? "bg-violet-400 cursor-not-allowed opacity-80"
+                            : "bg-linear-to-r from-violet-600 to-violet-700 hover:from-violet-700 hover:to-violet-800 cursor-pointer"
+                    }`}
+                >
+                    {loading
+                        ? currentState === "Sign up"
+                            ? "Creating Account..."
+                            : "Logging In..."
+                        : currentState === "Sign up"
+                            ? isDataSubmitted
+                                ? "Finish Signup"
+                                : "Continue"
+                            : "Login"}
+                </button>
+
+                {currentState === "Sign up" && (
+
+                    <label className="flex items-start gap-3 text-sm text-gray-600">
+
+                        <input
+                            type="checkbox"
+                            required
+                            className="mt-1 accent-violet-600"
+                        />
+
+                        <span>
+                            I agree to the Terms of Use and Privacy Policy.
+                        </span>
+
+                    </label>
+
+                )}
+
+                <p className="text-center text-sm text-gray-600">
+
+                    {currentState === "Sign up"
+                        ? "Already have an account?"
+                        : "Don't have an account?"}
+
+                    <span
+                        onClick={() => {
+                            setCurrentState(
+                                currentState === "Sign up"
+                                    ? "Login"
+                                    : "Sign up"
+                            );
+                            setisDataSubmitted(false);
+                        }}
+                        className="ml-2 font-semibold text-violet-600 hover:text-violet-700 cursor-pointer"
+                    >
+                        {currentState === "Sign up"
+                            ? "Login"
+                            : "Sign Up"}
+                    </span>
+
+                </p>
+
+            </form>
+
+        </div>
+
     </div>
+
+</div>
   )
 }
 

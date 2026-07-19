@@ -67,7 +67,7 @@ const Sidebar = () => {
 
                             <HiOutlineDotsVertical
                                 size={22}
-                                className="cursor-pointer text-black mr-5"
+                                className="cursor-pointer text-violet-500 mr-5"
                                 onClick={(e) => {
                                     e.stopPropagation()
                                     setShowMenu(prev => !prev)
@@ -77,10 +77,10 @@ const Sidebar = () => {
                             {showMenu && (
                                 <div
                                     onClick={(e) => e.stopPropagation()}
-                                    className='absolute top-full right-0 z-20 w-32 p-4 rounded-md border border-gray-600 text-gray-100 bg-[#1a1a1a]'
+                                    className='absolute top-full right-0 z-20 w-32 p-4 rounded-md border border-violet-600 text-violet-500 bg-violet-100'
                                 >
                                     <p
-                                        className='cursor-pointer text-sm'
+                                        className='cursor-pointer text-md'
                                         onClick={() => {
                                             setShowMenu(false)
                                             navigate('/profile')
@@ -96,7 +96,7 @@ const Sidebar = () => {
                                             setShowMenu(false)
                                             logout()
                                         }}
-                                        className='cursor-pointer text-sm'
+                                        className='cursor-pointer text-md'
                                     >
                                         Logout
                                     </p>
