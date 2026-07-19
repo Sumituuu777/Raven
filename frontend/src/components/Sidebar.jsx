@@ -106,7 +106,7 @@ const Sidebar = () => {
                         </div>
                     </div>
 
-                    <div className="flex items-center mt-2 gap-2 px-3 py-2 rounded-full bg-gray-200 hover:bg-gray-300 border-gray-300 hover:border-gray-700 border-2 mx-3">
+                    <div className="flex items-center mt-2 gap-2 px-3 py-2 rounded-full bg-gray-200 hover:bg-gray-300 border-gray-300 hover:border-gray-700 border-2 mx-1">
                         <HiOutlineSearch
                             size={20}
                             className="text-gray-800 cursor-pointer"

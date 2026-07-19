@@ -32,14 +32,13 @@ export const CreateBlog = async (req, res) => {
 
         }
         for (const userId in userSocketMap) {
-                if (userId !== author.toString()) {
-                    io.to(userSocketMap[userId]).emit("newBlogCreated");
-                }
+            if (userId !== author.toString()) {
+                io.to(userSocketMap[userId]).emit("newBlogCreated");
+            }
         }
         return res.json({ success: true, blog: newBlog })
 
     } catch (error) {
-        console.log(error.message)
         return res.json({ success: false, message: error.message })
     }
 }
@@ -54,7 +53,6 @@ export const getallBlogs = async (req, res) => {
         return res.json({ success: true, blogs: AllBlogs })
 
     } catch (error) {
-        console.log(error.message)
         return res.json({ success: false, message: error.message })
     }
 }
@@ -64,20 +62,20 @@ export const updateBlog = async (req, res) => {
     try {
 
         const oldBlog = await Blogs.findById(blogId)
-            if (!oldBlog) {
-                return res.json({
-                    success: false,
-                    message: "original blog not found"
-                })
-            }
+        if (!oldBlog) {
+            return res.json({
+                success: false,
+                message: "original blog not found"
+            })
+        }
 
-            // only authorized person should delete his blog
-            if (oldBlog.author.toString() !== req.user._id.toString()) {
-                return res.json({
-                    success: false,
-                    message: "Unauthorized"
-                });
-            }
+        // only authorized person should delete his blog
+        if (oldBlog.author.toString() !== req.user._id.toString()) {
+            return res.json({
+                success: false,
+                message: "Unauthorized"
+            });
+        }
 
         const { title, content, coverImage } = req.body;
         const blogId = req.params.blogId;
@@ -96,12 +94,12 @@ export const updateBlog = async (req, res) => {
             return res.json({ success: true, blog: updatedBlog })
 
         } else {
-            
+
             const upload = await cloudinary.uploader.upload(coverImage, {
                 folder: "blog_covers",
                 resource_type: "image",
             });
-            
+
             updatedBlog = await Blogs.findByIdAndUpdate(blogId, { title, content, tags, coverImage: { url: upload.secure_url, public_id: upload.public_id } }, { returnDocument: "after" })
 
             // after successfully uploading new image, deleting the old image, good thing to do.
@@ -115,7 +113,6 @@ export const updateBlog = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error.message)
         return res.json({ success: false, message: error.message })
     }
 }
@@ -123,7 +120,7 @@ export const updateBlog = async (req, res) => {
 
 export const deleteBlog = async (req, res) => {
     try {
-        const blogId=req.params.blogId;
+        const blogId = req.params.blogId;
         const blog = await Blogs.findById(blogId);
 
         if (!blog) {
@@ -147,7 +144,46 @@ export const deleteBlog = async (req, res) => {
             message: "Blog deleted successfully"
         });
     } catch (error) {
-        console.log(error.message)
         res.json({ success: false, message: error.message })
     }
 }
+//------------------------------toggle like blog ----------------------------------------------------------------------
+export const toggleLikeBlog = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const blogId = req.params.blogId;
+
+        const blog = await Blogs.findById(blogId);
+
+        if (!blog) {
+            return res.json({
+                success: false,
+                message: "Blog not found"
+            });
+        }
+
+        const alreadyLiked = blog.likes.some(id => id.equals(userId));
+
+        const update = alreadyLiked
+            ? { $pull: { likes: userId } }
+            : { $addToSet: { likes: userId } };
+
+        const updatedBlog = await Blogs.findByIdAndUpdate(
+            blogId,
+            update,
+            { returnDocument:"after" }
+        ).populate("author", "fullName profilePic");
+
+        return res.json({
+            success: true,
+            blog: updatedBlog,
+            message: alreadyLiked ? "Blog unliked" : "Blog liked"
+        });
+
+    } catch (error) {
+        res.json({
+            success: false,
+            message: error.message
+        });
+    }
+};

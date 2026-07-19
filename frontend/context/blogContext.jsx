@@ -22,7 +22,7 @@ export const BlogProvider = ({ children }) => {
         }
     };
 
-    // FIX: Listen for real-time updates from other users
+    // Listen for real-time updates from other users
     useEffect(() => {
         if (!socket) return;
 
@@ -53,10 +53,28 @@ export const BlogProvider = ({ children }) => {
                 toast.error(data.message);
             }
         } catch (error) {
-            toast.error(error.response?.data?.message || error.message);
+            toast.error(error.message);
         }
     };
+    const toggleLike = async (blogId) => {
+    try {
+        const { data } = await axios.put(`/api/blogs/toggleLike/${blogId}`);
 
-    const value = { blogs, setBlogs, getBlogs, createBlog, createBlogState, setCreateBlogState };
+        if (!data.success) {
+            return toast.error(data.message);
+        }
+
+        setBlogs(prev =>
+            prev.map(blog =>
+                blog._id === blogId ? data.blog : blog
+            )
+        );
+
+    } catch (error) {
+        toast.error(error.message);
+    }
+};
+
+    const value = { blogs, setBlogs, getBlogs, createBlog, createBlogState, setCreateBlogState,toggleLike };
     return <BlogContext.Provider value={value}>{children}</BlogContext.Provider>;
 };
