@@ -10,8 +10,7 @@ const BlogList = () => {
     const { activeView, setActiveView } = useContext(ChatContext);
     const { authUser } = useContext(AuthContext);
 
-    const { blogs, getBlogs, setCreateBlogState, toggleLike,deleteBlog } = useContext(BlogContext);
-    const [editingBlog, setEditingBlog] = useState(null);
+    const { blogs, getBlogs, setCreateBlogState, toggleLike,deleteBlog,editingBlog, setEditingBlog } = useContext(BlogContext);
 
     useEffect(() => {
         getBlogs();
@@ -148,7 +147,10 @@ const BlogList = () => {
                                         {blog.author?._id?.toString() === authUser._id.toString() &&
 
                                             <button
-                                                onClick={() => editBlog(blog._id)}
+                                                onClick={() => {
+                                                    setEditingBlog(blog);
+                                                    setCreateBlogState("createblog");
+                                                }}
                                                 className="flex items-center gap-2 px-3 py-2 rounded-lg text-violet-500 hover:bg-violet-50 hover:text-violet-600 transition cursor-pointer"
                                             >
                                                 <HiOutlinePencilAlt className="w-5 h-5" />

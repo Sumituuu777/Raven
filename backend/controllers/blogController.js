@@ -60,6 +60,8 @@ export const getallBlogs = async (req, res) => {
 
 export const updateBlog = async (req, res) => {
     try {
+        const { title, content, coverImage } = req.body;
+        const blogId = req.params.blogId;
 
         const oldBlog = await Blogs.findById(blogId)
         if (!oldBlog) {
@@ -77,8 +79,6 @@ export const updateBlog = async (req, res) => {
             });
         }
 
-        const { title, content, coverImage } = req.body;
-        const blogId = req.params.blogId;
         if (!title || !content) {
             return res.json({
                 success: false,
@@ -90,7 +90,7 @@ export const updateBlog = async (req, res) => {
         let updatedBlog;
         if (!coverImage) {
 
-            updatedBlog = await Blogs.findByIdAndUpdate(blogId, { title, content, tags }, { returnDocument: "after" })
+            updatedBlog = await Blogs.findByIdAndUpdate(blogId, { title, content, tags }, { returnDocument: "after" }).populate("author", "fullName profilePic")
             return res.json({ success: true, blog: updatedBlog })
 
         } else {
@@ -100,7 +100,7 @@ export const updateBlog = async (req, res) => {
                 resource_type: "image",
             });
 
-            updatedBlog = await Blogs.findByIdAndUpdate(blogId, { title, content, tags, coverImage: { url: upload.secure_url, public_id: upload.public_id } }, { returnDocument: "after" })
+            updatedBlog = await Blogs.findByIdAndUpdate(blogId, { title, content, tags, coverImage: { url: upload.secure_url, public_id: upload.public_id } }, { returnDocument: "after" }).populate("author", "fullName profilePic")
 
             // after successfully uploading new image, deleting the old image, good thing to do.
             // deleting only if image existed, checked by ? operator.
@@ -135,6 +135,9 @@ export const deleteBlog = async (req, res) => {
                 success: false,
                 message: "Unauthorized to delete blog"
             });
+        }
+        if (blog.coverImage?.public_id) {
+            await cloudinary.uploader.destroy(blog.coverImage.public_id);
         }
 
         await blog.deleteOne();

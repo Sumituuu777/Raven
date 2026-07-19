@@ -7,6 +7,7 @@ export const BlogContext = createContext();
 export const BlogProvider = ({ children }) => {
     const [blogs, setBlogs] = useState([]);
     const [createBlogState, setCreateBlogState] = useState("blogList");
+    const [editingBlog, setEditingBlog] = useState(null);
     const { socket, axios } = useContext(AuthContext);
 
     //---------------------------------------get Blogs ------------------------------------------------------
@@ -94,6 +95,26 @@ export const BlogProvider = ({ children }) => {
             toast.error(error.message);
         }
     };
-    const value = { blogs, setBlogs, getBlogs, createBlog, createBlogState, setCreateBlogState,toggleLike,deleteBlog };
+//-----------------------------------------------Update blog----------------------------------------------------------
+    const updateBlog=async(blogId,blogData)=>{
+        try{
+            const { data } = await axios.put(`/api/blogs/updateBlog/${blogId}`,blogData);
+
+            if(data.success){
+                toast.success(data.message);
+
+                setBlogs(prev=>
+                    prev.map(blog=>
+                        blog._id===blogId ? data.blog: blog
+                    )
+                )
+            }else{
+                return toast.error(data.message)
+            }
+        } catch (error) {
+            toast.error(error.message);
+        }
+    }
+    const value = { blogs, setBlogs, getBlogs, createBlog, createBlogState, setCreateBlogState,toggleLike,deleteBlog,updateBlog,editingBlog,setEditingBlog};
     return <BlogContext.Provider value={value}>{children}</BlogContext.Provider>;
 };

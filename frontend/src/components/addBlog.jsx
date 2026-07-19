@@ -1,16 +1,27 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext ,useEffect} from "react";
 import assets from "../assets/assets";
 import { BlogContext } from "../../context/blogContext";
 
 const AddBlog = () => {
     // FIX: Destructure createBlog here
-    const { createBlog, setCreateBlogState } = useContext(BlogContext);
+    const {createBlog,updateBlog,editingBlog, setEditingBlog, setCreateBlogState} = useContext(BlogContext);
 
-    const [title, setTitle] = useState("");
-    const [content, setContent] = useState("");
+    const [title, setTitle] = useState(editingBlog?.title || "");
+    const [content, setContent] = useState(editingBlog?.content || "");
     const [coverImage, setCoverImage] = useState(null);
-    const [preview, setPreview] = useState("");
+    const [preview, setPreview] = useState(
+        editingBlog?.coverImage?.url || ""
+    );
     const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        if (editingBlog) {
+            setTitle(editingBlog.title);
+            setContent(editingBlog.content);
+            setPreview(editingBlog.coverImage?.url || "");
+            setCoverImage(null);
+        }
+    }, [editingBlog]);
 
     const submitHandler = async (e) => {
         e.preventDefault();
@@ -30,21 +41,33 @@ const AddBlog = () => {
         };
 
         try {
+            const saveBlog = async () => {
+                if (editingBlog) {
+                    await updateBlog(editingBlog._id, blogPayload);
+                } else {
+                    await createBlog(blogPayload);
+                }
+
+                setEditingBlog(null);
+            };
+
             if (coverImage) {
                 const reader = new FileReader();
+
                 reader.readAsDataURL(coverImage);
+
                 reader.onloadend = async () => {
+                    blogPayload.coverImage = reader.result;
+
                     try {
-                        blogPayload.coverImage = reader.result;
-                        await createBlog(blogPayload);
-                    } catch (error) {
-                        console.error(error);
+                        await saveBlog();
                     } finally {
                         setIsLoading(false);
                     }
                 };
             } else {
-                await createBlog(blogPayload);
+
+                await saveBlog();
                 setIsLoading(false);
             }
         } catch (error) {
@@ -63,7 +86,7 @@ const AddBlog = () => {
                     className="w-7 cursor-pointer"
                     alt="Back"
                 />
-                <h2 className="text-xl font-semibold flex-1">Write Blog</h2>
+                <h2 className="text-xl font-semibold flex-1">{editingBlog ? "Edit Blog" : "Write Blog"}</h2>
             </div>
 
             <form onSubmit={submitHandler} className="flex-1 overflow-y-auto p-6 space-y-6">
@@ -126,7 +149,7 @@ const AddBlog = () => {
                     type="submit"
                     disabled={isLoading}
                     className={`w-full py-3.5 rounded-xl text-white font-semibold shadow-sm transition-all text-center focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2
-        ${isLoading
+                    ${isLoading
                             ? 'bg-violet-400 cursor-not-allowed opacity-80'
                             : 'bg-linear-to-r from-violet-600 to-violet-700 hover:from-violet-700 hover:to-violet-800 active:bg-violet-700 cursor-pointer'
                         }`}
@@ -138,10 +161,10 @@ const AddBlog = () => {
                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                             </svg>
-                            Publishing...
+                            {editingBlog ? "Updating..." : "Publishing..."}
                         </span>
                     ) : (
-                        "Publish Blog"
+                        editingBlog ? "Update Blog" : "Publish Blog"
                     )}
                 </button>
             </form>
