@@ -48,7 +48,7 @@ export const CreateBlog = async (req, res) => {
 export const getallBlogs = async (req, res) => {
     try {
         const AllBlogs = await Blogs.find()
-            .populate("author", "name profilePic")
+            .populate("author", "fullName profilePic")
             .sort({ createdAt: -1 });
 
         return res.json({ success: true, blogs: AllBlogs })
