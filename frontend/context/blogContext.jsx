@@ -6,38 +6,39 @@ import { AuthContext } from "./authContext";
 export const BlogContext = createContext()
 
 export const BlogProvider = ({ children }) => {
-
     const [blogs, setBlogs] = useState([]);
     const [createBlogState, setCreateBlogState] = useState("blogList");
-    const { socket, axios } = useContext(AuthContext)
+    const { socket, axios } = useContext(AuthContext);
 
     const getBlogs = async () => {
         try {
-            const { data } = await axios.get("/api/blogs/getAllBlogs")
-
+            const { data } = await axios.get("/api/blogs/getAllBlogs");
             if (data.success) {
-                setMessages(data.messages)
-                setBlogs(data.blogs)
+                setBlogs(data.blogs);
             }
         } catch (error) {
-            toast(error.message)
+            toast.error(error.message);
         }
-    }
+    };
 
-    const createBlog = async () => {
+    // FIX: Accept blogData parameter and drop multipart header headers
+    const createBlog = async (blogData) => {
         try {
-            await axios.post("/api/blogs/createBlog", formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-            });
+            const { data } = await axios.post("/api/blogs/createBlog", blogData);
+            
+            if (data.success) {
+                toast.success("Blog published successfully!");
+                // Refresh list and send user back
+                getBlogs(); 
+                setCreateBlogState("blogList");
+            } else {
+                toast.error(data.message || "Failed to create blog");
+            }
         } catch (error) {
-            toast(error.message)
+            toast.error(error.response?.data?.message || error.message);
         }
-    }
+    };
 
-    const value = { blogs, setBlogs, getBlogs, createBlog, createBlogState, setCreateBlogState};
-    return (<BlogContext.Provider value={value}>
-        {children}
-    </BlogContext.Provider>)
-}
+    const value = { blogs, setBlogs, getBlogs, createBlog, createBlogState, setCreateBlogState };
+    return <BlogContext.Provider value={value}>{children}</BlogContext.Provider>;
+};
