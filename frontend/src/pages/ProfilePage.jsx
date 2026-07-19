@@ -126,12 +126,20 @@ const ProfilePage = () => {
         </form>
 
         <div className='flex justify-center items-center p-6 sm:p-8'>
-          <img
-            src={authUser?.profilePic || assets.raven_logo}
-            alt=""
-            className={`w-40 h-40 sm:w-52 sm:h-52 object-cover rounded-full ${selectedImg ? 'rounded-full' : ''
-              }`}
-          />
+          {authUser?.profilePic ?(
+
+            <img
+              src={authUser?.profilePic || assets.raven_logo}
+              alt=""
+              className={`w-40 h-40 sm:w-52 sm:h-52 object-cover rounded-full ${selectedImg ? 'rounded-full' : ''
+                }`}
+            />
+
+          ):(
+            <div className="w-40 h-40 sm:w-52 sm:h-52 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center font-semibold text-[100px]">
+              {authUser.fullName.charAt(0).toUpperCase()}
+            </div>
+          )}
         </div>
 
       </div>

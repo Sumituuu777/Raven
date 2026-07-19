@@ -88,8 +88,13 @@ const ChatContainer = () => {
 
       {/* header */}
       <div className='flex items-center py-3 gap-3 mx-4 border-b border-stone-500'>
-
-        <img src={selectedUser.profilePic || assets.avatar_icon} alt="" className='w-8 aspect-square rounded-full' />
+        {selectedUser.profilePic ? (
+          <img src={selectedUser.profilePic || assets.avatar_icon} alt="" className='w-8 aspect-square rounded-full' />
+        ):(
+          <div className="w-8.75 aspect-square rounded-full bg-violet-100 text-violet-600 flex items-center justify-center font-semibold text-[20px]">
+            {selectedUser?.fullName? selectedUser.fullName.charAt(0).toUpperCase() : "A"}
+          </div>
+        )}
 
         <p className='flex-1 text-lg flex items-center gap-2 text-gray-800'>
           {selectedUser.fullName}

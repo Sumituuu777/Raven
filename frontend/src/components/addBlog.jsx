@@ -128,7 +128,7 @@ const AddBlog = () => {
                     className={`w-full py-3.5 rounded-xl text-white font-semibold shadow-sm transition-all text-center focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2
         ${isLoading
                             ? 'bg-violet-400 cursor-not-allowed opacity-80'
-                            : 'bg-violet-500 hover:bg-violet-600 active:bg-violet-700 cursor-pointer'
+                            : 'bg-linear-to-r from-violet-600 to-violet-700 hover:from-violet-700 hover:to-violet-800 active:bg-violet-700 cursor-pointer'
                         }`}
                 >
                     {isLoading ? (

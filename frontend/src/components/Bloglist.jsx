@@ -105,7 +105,7 @@ const BlogList = () => {
                                             />
                                         ) : (
                                             // Fallback placeholder if profile image doesn't exist yet
-                                            <div className="w-7 h-7 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center font-bold text-[10px]">
+                                            <div className="w-7 h-7 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center font-semibold text-[15px]">
                                                 {blog.author?.fullName? blog.author.fullName.charAt(0).toUpperCase() : "A"}
                                             </div>
                                         )}
