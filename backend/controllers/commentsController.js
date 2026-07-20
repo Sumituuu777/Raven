@@ -1,4 +1,4 @@
-import Comments from "../Models/comment"
+import Comments from "../Models/comment.js"
 
 
 //-----------------------------add or  create comment-------------------------------------------
