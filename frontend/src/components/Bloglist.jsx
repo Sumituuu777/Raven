@@ -139,7 +139,7 @@ const BlogList = () => {
                                         </button>
 
                                         <button onClick={() =>setSelectedBlogForComments(prev =>prev === blog._id ? null : blog._id)}
-                                            className="flex items-center gap-1.5 "
+                                            className="flex items-center gap-1.5 cursor-pointer hover:text-violet-500"
                                         >
                                             <HiOutlineChatAlt2 className="w-5 h-5" />
                                             <span>{blog.commentsCount}</span>
