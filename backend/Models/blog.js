@@ -32,11 +32,11 @@ const blogSchema = new mongoose.Schema({
         ref: "User"
     }],
 
-    views: {
+    commentsCount: {
         type: Number,
-        default: 0
+        default: 0,
     }
 }, { timestamps: true });
 
-const Blogs=mongoose.model('Blogs',blogSchema)
+const Blogs = mongoose.model('Blogs', blogSchema)
 export default Blogs;

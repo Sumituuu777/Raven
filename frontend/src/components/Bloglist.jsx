@@ -142,7 +142,7 @@ const BlogList = () => {
                                             className="flex items-center gap-1.5 "
                                         >
                                             <HiOutlineChatAlt2 className="w-5 h-5" />
-                                            <span>{blog.views}</span>
+                                            <span>{blog.commentsCount}</span>
                                         </button>
 
                                         {/* <span>{formatDate(blog.createdAt)}</span> */}
@@ -179,7 +179,7 @@ const BlogList = () => {
                                 </div>
                             </div>
                             {openComments &&
-                                <CommentsContainer/>
+                                <CommentsContainer blogId={blog._id}/>
                             }
                         </div>
                     ))

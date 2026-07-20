@@ -3,10 +3,10 @@ import Comments from "../Models/comment.js"
 
 //-----------------------------add or  create comment-------------------------------------------
 
-export const addComment =async(req, res)=>{
+export const addComment = async (req, res) => {
     try {
-        const blogId=req.params.blogId;
-        const user=req.user._id;
+        const blogId = req.params.blogId;
+        const user = req.user._id;
         const { text } = req.body;
         if (!text) {
             return res.json({
@@ -14,7 +14,10 @@ export const addComment =async(req, res)=>{
                 message: "Text is required."
             });
         }
-        newComment = await Comments.create({ text, user, blog:blogId})
+        const newComment = await Comments.create({ text, user, blog: blogId })
+        await Blogs.findByIdAndUpdate(blogId, {
+            $inc: { commentsCount: 1 }
+        });
         return res.json({ success: true, comment: newComment })
     } catch (error) {
         console.log(error.message)
@@ -23,12 +26,12 @@ export const addComment =async(req, res)=>{
 }
 //-----------------------------get  comment-------------------------------------------
 
-export const getComments =async(req, res)=>{
+export const getComments = async (req, res) => {
     try {
-        const blogId=req.params.blogId;
-        const comments=await Comments.findById(blogId)
-            .populate("user","fullName profilePic")
-            .sort({createdAt : -1})
+        const blogId = req.params.blogId;
+        const comments = await Comments.find({ blog: blogId })
+            .populate("user", "fullName profilePic")
+            .sort({ createdAt: -1 })
 
         return res.json({ success: true, comments })
     } catch (error) {
@@ -38,9 +41,9 @@ export const getComments =async(req, res)=>{
 }
 //-----------------------------get update comment-------------------------------------------
 
-export const updateComment =async(req, res)=>{
+export const updateComment = async (req, res) => {
     try {
-        
+
     } catch (error) {
         console.log(error.message)
         res.json({ success: false, message: error.message })
@@ -48,10 +51,10 @@ export const updateComment =async(req, res)=>{
 }
 //----------------------------- delete Comment (by comment owner only)-------------------------------------------
 
-export const deleteComment =async(req, res)=>{
+export const deleteComment = async (req, res) => {
     try {
-        const commentId=req.params.commentId;
-        const comment =await Comments.findById(commentId);
+        const commentId = req.params.commentId;
+        const comment = await Comments.findById(commentId);
 
         if (!comment) {
             return res.json({
@@ -66,6 +69,9 @@ export const deleteComment =async(req, res)=>{
                 message: "Unauthorized to delete comment"
             });
         }
+        await Blogs.findByIdAndUpdate(comment.blog, {
+            $inc: { commentsCount: -1 }
+        });
         await comment.deleteOne();
 
         return res.json({

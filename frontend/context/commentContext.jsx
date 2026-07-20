@@ -31,7 +31,7 @@ export const CommentProvider=({children})=>{
             if (data.success) {
                 toast.success("Comment added successfully!");
                 // For the comment creator, we fetch immediately to sync local state
-                getComments();
+                getComments(blogId);
             } else {
                 toast.error(data.message);
             }
