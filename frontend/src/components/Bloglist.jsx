@@ -11,7 +11,7 @@ import CommentsContainer from "./CommentsContainer";
 const BlogList = () => {
     const { activeView, setActiveView } = useContext(ChatContext);
     const { authUser } = useContext(AuthContext);
-    const { openComments, setOpenComments} = useContext(CommentContext);
+    const { selectedBlogForComments, setSelectedBlogForComments} = useContext(CommentContext);
 
     const { blogs, getBlogs, setCreateBlogState, toggleLike,deleteBlog,editingBlog, setEditingBlog } = useContext(BlogContext);
 
@@ -138,7 +138,7 @@ const BlogList = () => {
                                             <span>{blog.likes.length}</span>
                                         </button>
 
-                                        <button onClick={()=>setOpenComments(prev=>!prev)}
+                                        <button onClick={() =>setSelectedBlogForComments(prev =>prev === blog._id ? null : blog._id)}
                                             className="flex items-center gap-1.5 "
                                         >
                                             <HiOutlineChatAlt2 className="w-5 h-5" />
@@ -178,9 +178,9 @@ const BlogList = () => {
 
                                 </div>
                             </div>
-                            {openComments &&
-                                <CommentsContainer blogId={blog._id}/>
-                            }
+                            {selectedBlogForComments === blog._id && (
+                                <CommentsContainer blogId={blog._id} />
+                            )}
                         </div>
                     ))
                 )}

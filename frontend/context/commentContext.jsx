@@ -6,7 +6,7 @@ export const CommentContext=createContext();
 
 export const CommentProvider=({children})=>{
     const [allComments, setAllComments] = useState([]);
-    const [openComments, setOpenComments] = useState(false);
+    const [selectedBlogForComments, setSelectedBlogForComments] = useState(null);
     const { socket, axios } = useContext(AuthContext);
 
 //---------------------------------------get Blogs ------------------------------------------------------
@@ -59,7 +59,7 @@ export const CommentProvider=({children})=>{
         }
     };
     const value={
-        getComments,openComments,setOpenComments,deleteComment,createComment,allComments,setAllComments
+        getComments,selectedBlogForComments,setSelectedBlogForComments,deleteComment,createComment,allComments,setAllComments
     }
     return(
         <CommentContext.Provider value={value}>

@@ -5,7 +5,7 @@ import { CommentContext } from "../../context/commentContext";
 import assets from '../assets/assets';
 const CommentsContainer = ({blogId}) => {
   const { authUser } = useContext(AuthContext);
-  const { openComments, setOpenComments,deleteComment,createComment,allComments,setAllComments, getComments} = useContext(CommentContext);
+  const { selectedBlogForComments, setSelectedBlogForComments,deleteComment,createComment,allComments,setAllComments, getComments} = useContext(CommentContext);
   const [text, setText] = useState("");
 
   useEffect(() => {

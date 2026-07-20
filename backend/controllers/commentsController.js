@@ -1,3 +1,4 @@
+import Blogs from "../Models/blog.js";
 import Comments from "../Models/comment.js"
 
 
