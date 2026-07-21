@@ -5,10 +5,13 @@ import assets from "../assets/assets";
 import { ChatContext } from "../../context/ChatContext";
 import { AuthContext } from "../../context/authContext";
 import { BlogContext } from "../../context/blogContext";
+import { CommentContext } from "../../context/commentContext";
+import CommentsContainer from "./CommentsContainer";
 
 const BlogList = () => {
     const { activeView, setActiveView } = useContext(ChatContext);
     const { authUser } = useContext(AuthContext);
+    const { selectedBlogForComments, setSelectedBlogForComments} = useContext(CommentContext);
 
     const { blogs, getBlogs, setCreateBlogState, toggleLike,deleteBlog,editingBlog, setEditingBlog } = useContext(BlogContext);
 
@@ -135,12 +138,12 @@ const BlogList = () => {
                                             <span>{blog.likes.length}</span>
                                         </button>
 
-                                        <div
-                                            className="flex items-center gap-1.5 "
+                                        <button onClick={() =>setSelectedBlogForComments(prev =>prev === blog._id ? null : blog._id)}
+                                            className="flex items-center gap-1.5 cursor-pointer hover:text-violet-500"
                                         >
                                             <HiOutlineChatAlt2 className="w-5 h-5" />
-                                            <span>{blog.views}</span>
-                                        </div>
+                                            <span>{blog.commentsCount}</span>
+                                        </button>
 
                                         {/* <span>{formatDate(blog.createdAt)}</span> */}
 
@@ -175,6 +178,9 @@ const BlogList = () => {
 
                                 </div>
                             </div>
+                            {selectedBlogForComments === blog._id && (
+                                <CommentsContainer blogId={blog._id} />
+                            )}
                         </div>
                     ))
                 )}

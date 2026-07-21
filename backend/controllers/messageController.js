@@ -103,3 +103,31 @@ export const markMessageSeen=async(req,res)=>{
     }
     
 }
+//-----------------------------------------delete message-------------------------------------------
+export const deleteMessage=async (req,res)=>{
+    try {
+        const msgId=req.params.msgId;
+        const userId=req.user._id;
+        const message=await Message.findOne({_id:msgId})
+        if(!message){
+            return res.json({
+                success:false,
+                message:"Message not found"
+            })
+        }
+        if(message.senderId.toString()!==userId.toString()){
+            return res.json({
+                success:false,
+                message:"Unauthorized to delete message"
+            })
+        }
+        await message.deleteOne()
+        return res.json({
+                success:true,
+                message:"Message deleted"
+            })
+    } catch (error) {
+        console.log(error.message)
+        res.json({success:false,message:error.message})
+    }
+}

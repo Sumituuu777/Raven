@@ -4,9 +4,9 @@ import { addComment, deleteComment, getComments, updateComment } from "../contro
 
 const commentsrouter= express.Router();
 
-commentsrouter.post("/addcomment/:blogId",addComment)
-commentsrouter.post("/getcomments/:blogId",getComments)
-commentsrouter.put("/updatecomment/:commentId",updateComment)
-commentsrouter.delete("/deletecomment/:commentId",deleteComment)
+commentsrouter.post("/addcomment/:blogId", protectRoute, addComment)
+commentsrouter.get("/getcomments/:blogId", protectRoute, getComments)
+commentsrouter.put("/updatecomment/:commentId", protectRoute, updateComment)
+commentsrouter.delete("/deletecomment/:commentId", protectRoute, deleteComment)
 
 export default commentsrouter

@@ -106,10 +106,10 @@ const Sidebar = () => {
                         </div>
                     </div>
 
-                    <div className="flex items-center mt-2 gap-2 px-3 py-2 rounded-full bg-gray-200 hover:bg-gray-300 border-gray-300 hover:border-gray-700 border-2 mx-1">
+                    <div className="flex items-center mt-2 gap-2 px-3 py-2 rounded-full bg-violet-100 hover:bg-violet-200 border-violet-300 hover:border-violet-500 border mx-1">
                         <HiOutlineSearch
                             size={20}
-                            className="text-gray-800 cursor-pointer"
+                            className="text-gray-600 cursor-pointer"
                         />
 
                         <input
@@ -117,7 +117,7 @@ const Sidebar = () => {
                             placeholder="Search users..."
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
-                            className="bg-transparent outline-none w-full text-gray-800 placeholder-gray-800"
+                            className="bg-transparent outline-none w-full text-gray-600 placeholder-gray-600"
                         />
                     </div>
                 </div>
@@ -138,7 +138,7 @@ const Sidebar = () => {
                                 }))
                             }}
                             className={`relative flex items-center gap-2 p-2 pl-4 rounded cursor-pointer max-sm:text-sm ${selectedUser?._id === user._id
-                                    ? 'bg-gray-300'
+                                    ? 'bg-violet-100'
                                     : ''
                                 }`}
                         >

@@ -85,8 +85,21 @@ export const ChatProvider=({children})=>{
         return ()=> unsubscribeFromMessages()
     },[socket,selectedUser])
 
+    const deleteMessage=async(msgId,userId)=>{
+        try{
+            const {data } =await axios.delete(`/api/messages/delete/${msgId}`)
+            if(data.success){
+                getMessages(userId);
+                toast.success(data.message)
+            }else{
+                toast.error(data.message)
+            }
+        }catch(error){
+            toast.error(error.message)
+        }
+    }
     const value={
-        messages,users,selectedUser,getUsers,setMessages,getMessages,sendMessages,setSelectedUser,unseenMessages,setUnseenMessages,activeView,setActiveView
+        messages,users,selectedUser,getUsers,setMessages,getMessages,sendMessages,setSelectedUser,unseenMessages,setUnseenMessages,activeView,setActiveView,deleteMessage
     }
 
     return (

@@ -8,64 +8,96 @@ import { AuthContext } from '../../context/authContext';
 import toast from 'react-hot-toast';
 
 const ChatContainer = () => {
-
-  const { messages, selectedUser, setSelectedUser, sendMessages, getMessages,setActiveView } = useContext(ChatContext)
+  const { messages, selectedUser, setSelectedUser, sendMessages, getMessages, setActiveView,deleteMessage } = useContext(ChatContext)
   const { authUser, onlineUsers } = useContext(AuthContext)
-
   const [input, setInput] = useState('')
   const [sending, setSending] = useState(false)
-
   const scrollEnd = useRef();
+  
+  // --- Context Menu State ---
+  const [menuConfig, setMenuConfig] = useState({ visible: false, x: 0, y: 0, targetMsgId: null });
+  let pressTimer = useRef(null);
+
+  // Close context menu when clicking anywhere else
+  useEffect(() => {
+    const closeMenu = () => setMenuConfig(prev => ({ ...prev, visible: false }));
+    window.addEventListener('click', closeMenu);
+    return () => window.removeEventListener('click', closeMenu);
+  }, []);
+
+  // Open menu helper
+  const handleOpenMenu = (e, clientX, clientY, msgId) => {
+  e.preventDefault();
+  
+  // Find the chat container element to calculate its exact bounding boundaries
+  const chatContainer = e.currentTarget.closest('.relative');
+  const rect = chatContainer ? chatContainer.getBoundingClientRect() : { left: 0, top: 0 };
+
+  setMenuConfig({
+    visible: true,
+    // Calculate position exactly relative to the parent container
+    x: clientX - rect.left,
+    y: clientY - rect.top,
+    targetMsgId: msgId
+  });
+};
+
+  // Mobile Long Press Start
+  const handleTouchStart = (e, msgId) => {
+  if (e.touches.length > 1) return;
+  const touch = e.touches[0]; // Extract the first touch point explicitly
+  
+  pressTimer.current = setTimeout(() => {
+    handleOpenMenu(e, touch.clientX, touch.clientY, msgId);
+  }, 600);
+};
+
+  // Mobile Long Press End/Cancel
+  const handleTouchEnd = () => {
+    if (pressTimer.current) clearTimeout(pressTimer.current);
+  };
+
+  // Delete handler function
+  const handleDeleteMessage = (msgId) => {
+    deleteMessage(msgId,selectedUser._id)
+    setMenuConfig(prev => ({ ...prev, visible: false }));
+  };
 
   const handleSendMessage = async (e) => {
-  e.preventDefault()
-
-  if (sending) return
-
-  const message = input.trim()
-
-  if (!message) return
-
-  try {
-    setSending(true)
-
-    await sendMessages({ text: message })
-
-    setInput("")
-  } catch (error) {
-    console.log(error)
-  } finally {
-    setSending(false)
-  }
-}
-
-  // ---------------function to handle send image ------------------------------------------------------
-  const handleSendImage = async (e) => {
-  if (sending) return
-
-  const file = e.target.files[0]
-
-  if (!file || !file.type.startsWith("image/")) {
-    toast.error("select an image file")
-    return
-  }
-
-  const reader = new FileReader()
-
-  reader.onloadend = async () => {
+    e.preventDefault()
+    if (sending) return
+    const message = input.trim()
+    if (!message) return
     try {
       setSending(true)
-
-      await sendMessages({ image: reader.result })
-
-      e.target.value = ""
+      await sendMessages({ text: message })
+      setInput("")
+    } catch (error) {
+      console.log(error)
     } finally {
       setSending(false)
     }
   }
 
-  reader.readAsDataURL(file)
-}
+  const handleSendImage = async (e) => {
+    if (sending) return
+    const file = e.target.files[0]
+    if (!file || !file.type.startsWith("image/")) {
+      toast.error("select an image file")
+      return
+    }
+    const reader = new FileReader()
+    reader.onloadend = async () => {
+      try {
+        setSending(true)
+        await sendMessages({ image: reader.result })
+        e.target.value = ""
+      } finally {
+        setSending(false)
+      }
+    }
+    reader.readAsDataURL(file)
+  }
 
   useEffect(() => {
     if (selectedUser) {
@@ -76,80 +108,78 @@ const ChatContainer = () => {
   useEffect(() => {
     setTimeout(() => {
       if (scrollEnd.current && messages) {
-        scrollEnd.current?.scrollIntoView({
-          behavior: "smooth",
-        });
+        scrollEnd.current?.scrollIntoView({ behavior: "smooth" });
       }
     }, 0);
   }, [selectedUser, messages]);
 
   return selectedUser ? (
-    <div className='h-full flex flex-col overflow-hidden backdrop-blur-lg'>
+    <div className='h-full flex flex-col overflow-hidden backdrop-blur-lg relative'>
+      {/* Custom Context Menu */}
+      {menuConfig.visible && (
+        <div 
+          className='absolute bg-white border border-gray-200 rounded-md shadow-lg py-1 z-50 min-w-25'
+          style={{ top: `${menuConfig.y}px`, left: `${menuConfig.x}px` }}
+          onClick={(e) => e.stopPropagation()} // Stop click from closing itself instantly
+        >
+          <button 
+            onClick={() => handleDeleteMessage(menuConfig.targetMsgId)}
+            className='w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 font-medium'
+          >
+            Delete
+          </button>
+        </div>
+      )}
 
       {/* header */}
       <div className='flex items-center py-3 gap-3 mx-4 border-b border-stone-500'>
         {selectedUser.profilePic ? (
           <img src={selectedUser.profilePic || assets.avatar_icon} alt="" className='w-10 aspect-square rounded-full' />
-        ):(
+        ) : (
           <div className="w-10 aspect-square rounded-full bg-violet-100 text-violet-600 flex items-center justify-center font-semibold text-[20px]">
-            {selectedUser?.fullName? selectedUser.fullName.charAt(0).toUpperCase() : "A"}
+            {selectedUser?.fullName ? selectedUser.fullName.charAt(0).toUpperCase() : "A"}
           </div>
         )}
-
         <p className='flex-1 text-lg flex items-center gap-2 text-gray-800'>
           {selectedUser.fullName}
           {onlineUsers.includes(selectedUser._id) && <span className='w-2 h-2 bg-green-500 rounded-full'></span>}
-
         </p>
-
-        <img onClick={() => {
-          setSelectedUser(null)
-          setActiveView("users")
-        }} src={assets.arrow_icon} alt="" className='md:hidden max-w-7' />
-
-        <HiOutlineInformationCircle
-          size={22}
-          className="cursor-pointer text-black"
-        />
+        <img onClick={() => { setSelectedUser(null); setActiveView("users") }} src={assets.arrow_icon} alt="" className='md:hidden max-w-7' />
+        <HiOutlineInformationCircle size={22} className="cursor-pointer text-black" />
       </div>
 
       {/* chatting area */}
       <div className='flex-1 flex flex-col overflow-y-auto p-3'>
         {messages.map((msg, index) => (
-          <div key={index} className={`flex items-end justify-end gap-2 ${msg.senderId !== authUser._id && 'flex-row-reverse'}`}>
-            {
-              msg.image ? (
-                <img src={msg.image} alt="" className='max-w-57.5 border border-gray-700 rounded-lg overflow-hidden mb-8' />
-              ) : (
-                <p className={`p-2 max-w-50 md:text-sm font-light rounded-lg mb-8 break-all bg-linear-to-r from-violet-500 to-violet-600 text-white ${msg.senderId !== authUser._id ? 'rounded-bl-none' : 'rounded-br-none'}`}>{msg.text}</p>
-              )}
-
+          /* Added target events to this structural wrapper div */
+          <div 
+            key={index} 
+            onContextMenu={(e) => handleOpenMenu(e, e.clientX, e.clientY, msg._id || index)}
+            onTouchStart={(e) => handleTouchStart(e, msg._id || index)}
+            onTouchEnd={handleTouchEnd}
+            onTouchMove={handleTouchEnd}
+            className={`flex items-end justify-end gap-2 select-none ${msg.senderId === authUser._id && 'flex-row-reverse'}`}
+          >
+            {msg.image ? (
+              <img src={msg.image} alt="" className='max-w-57.5 border border-gray-700 rounded-lg overflow-hidden mb-8' />
+            ) : (
+              <p className={`p-2 max-w-50 md:text-sm font-light rounded-lg mb-8 wrap-break-words bg-linear-to-r from-violet-500 to-violet-600 text-white ${msg.senderId !== authUser._id ? 'rounded-br-none' : 'rounded-bl-none'}`}>{msg.text}</p>
+            )}
+            
             <div className='text-center text-xs'>
               {msg.senderId === authUser._id ? (
                 authUser?.profilePic ? (
-                  <img
-                    src={authUser.profilePic}
-                    alt=""
-                    className="w-7 aspect-square rounded-full object-cover"
-                  />
+                  <img src={authUser.profilePic} alt="" className="w-7 aspect-square rounded-full object-cover" />
                 ) : (
                   <div className="w-7 aspect-square rounded-full bg-violet-100 text-violet-600 flex items-center justify-center font-semibold text-sm">
-                    {authUser?.fullName
-                      ? authUser.fullName.charAt(0).toUpperCase()
-                      : "A"}
+                    {authUser?.fullName ? authUser.fullName.charAt(0).toUpperCase() : "A"}
                   </div>
                 )
               ) : selectedUser?.profilePic ? (
-                <img
-                  src={selectedUser.profilePic}
-                  alt=""
-                  className="w-7 aspect-square rounded-full object-cover"
-                />
+                <img src={selectedUser.profilePic} alt="" className="w-7 aspect-square rounded-full object-cover" />
               ) : (
                 <div className="w-7 aspect-square rounded-full bg-violet-100 text-violet-600 flex items-center justify-center font-semibold text-sm">
-                  {selectedUser?.fullName
-                    ? selectedUser.fullName.charAt(0).toUpperCase()
-                    : "A"}
+                  {selectedUser?.fullName ? selectedUser.fullName.charAt(0).toUpperCase() : "A"}
                 </div>
               )}
               <p className='text-gray-500'>{formatMessageTime(msg.createdAt)}</p>
@@ -158,53 +188,23 @@ const ChatContainer = () => {
         ))}
         <div ref={scrollEnd}></div>
       </div>
-      {/*--------------------------------- Bottom Area------------------------------------------------------  */}
 
+      {/* Bottom Area */}
       <div className='flex items-center gap-2 px-2 py-2 border-t border-gray-300 shrink-0'>
-
-        <div className='flex-1 min-w-0 flex items-center px-3 rounded-full bg-gray-300'>
-
-          <input
-            onChange={(e) => setInput(e.target.value)}
-            value={input}
-            onKeyDown={(e) => e.key === "Enter" ? handleSendMessage(e) : null}
-            type="text"
-            placeholder='Message'
-            className='flex-1 min-w-0 text-sm py-2 px-1 bg-transparent outline-none text-gray-900 placeholder-gray-700'
-          />
-
-          <input
-            onChange={handleSendImage}
-            type='file'
-            id='image'
-            accept='image/png,image/jpeg,image/jpg'
-            hidden
-          />
-
+        <div className='flex-1 min-w-0 flex items-center px-3 rounded-full bg-violet-200'>
+          <input onChange={(e) => setInput(e.target.value)} value={input} onKeyDown={(e) => e.key === "Enter" ? handleSendMessage(e) : null} type="text" placeholder='Message' className='flex-1 min-w-0 text-sm py-2 px-1 bg-transparent outline-none text-gray-900 placeholder-gray-700' />
+          <input onChange={handleSendImage} type='file' id='image' accept='image/png,image/jpeg,image/jpg' hidden />
           <label htmlFor="image" className='shrink-0 cursor-pointer'>
-            <HiOutlinePhotograph
-              size={18}
-              className="text-black"
-            />
+            <HiOutlinePhotograph size={18} className="text-black" />
           </label>
         </div>
-
-        <img
-          onClick={!sending ? handleSendMessage : undefined}
-          src={assets.send_button}
-          alt=""
-          className={`w-6 h-6 shrink-0 ${sending
-              ? 'opacity-50 cursor-not-allowed'
-              : 'cursor-pointer'
-            }`}
-        />
+        <img onClick={!sending ? handleSendMessage : undefined} src={assets.send_button} alt="" className={`w-6 h-6 shrink-0 ${sending ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`} />
       </div>
     </div>
   ) : (
-    // user not selected not rendering chat area just showing chat logo 
     <div className='h-full flex flex-col items-center justify-center gap-2 text-gray-500 max-md:hidden'>
       <img src={assets.logo_icon} alt="" className='max-w-16' />
-      <p className='text-lg font-medium text-gray-800' >Chat anytime,anywhere</p>
+      <p className='text-lg font-medium text-gray-800'>Chat anytime,anywhere</p>
     </div>
   )
 }
