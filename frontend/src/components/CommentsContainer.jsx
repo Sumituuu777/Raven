@@ -21,7 +21,7 @@ const CommentsContainer = ({ blogId }) => {
     );
     setText("");
   };
-  const formattedDate=(dateString)=>{
+  const formattedDate = (dateString) => {
     const date = new Date(dateString);
     const formatDate = date.toLocaleString('en-GB', {
       day: 'numeric',
@@ -37,36 +37,35 @@ const CommentsContainer = ({ blogId }) => {
   return (
     <div className="space-y-4">
       {/* Add Comment */}
-      <div className="flex gap-3 rounded-xl bg-gray-50 p-1 mx-4">
+      <div className="flex items-center gap-2 rounded-xl bg-gray-50 p-2 mx-3 sm:mx-4">
         {authUser?.profilePic ? (
           <img
-            src={authUser?.profilePic || assets.avatar_icon}
+            src={authUser.profilePic}
             alt=""
-            className="w-7 h-7 rounded-full object-cover shrink-0"
+            className="w-8 h-8 rounded-full object-cover shrink-0"
           />
         ) : (
-          <div className="w-7 h-7 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center font-semibold text-[15px]">
+          <div className="w-8 h-8 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center font-semibold text-[15px] shrink-0">
             {authUser?.fullName
               ? authUser.fullName.charAt(0).toUpperCase()
               : "A"}
           </div>
         )}
 
-
-        <div className="flex-1 flex gap-2">
+        <div className="flex flex-1 items-center gap-2 min-w-0">
           <input
             type="text"
             placeholder="Write a comment..."
             value={text}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-            className="flex-1 rounded-lg border border-gray-200 bg-white px-4 py-1 text-sm outline-none focus:border-violet-500"
+            className="flex-1 min-w-0 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-violet-500"
           />
 
           <button
             onClick={handleSubmit}
             disabled={!text.trim()}
-            className="rounded-lg bg-violet-600 px-4 text-white hover:bg-violet-700 transition disabled:bg-violet-300 disabled:cursor-not-allowed cursor-pointer"
+            className="shrink-0 rounded-lg bg-violet-600 px-3 sm:px-4 py-2 text-sm text-white hover:bg-violet-700 transition disabled:bg-violet-300 disabled:cursor-not-allowed cursor-pointer"
           >
             Post
           </button>
@@ -78,7 +77,7 @@ const CommentsContainer = ({ blogId }) => {
         {allComments.map((comment) => (
           <div
             key={comment._id}
-            className="flex gap-3 rounded-xl  px-8"
+            className="flex gap-3 rounded-xl px-4"
           >
             {comment.user.profilePic ? (
               <img
