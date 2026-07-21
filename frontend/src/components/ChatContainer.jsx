@@ -191,7 +191,7 @@ const ChatContainer = () => {
 
       {/* Bottom Area */}
       <div className='flex items-center gap-2 px-2 py-2 border-t border-gray-300 shrink-0'>
-        <div className='flex-1 min-w-0 flex items-center px-3 rounded-full bg-gray-300'>
+        <div className='flex-1 min-w-0 flex items-center px-3 rounded-full bg-violet-200'>
           <input onChange={(e) => setInput(e.target.value)} value={input} onKeyDown={(e) => e.key === "Enter" ? handleSendMessage(e) : null} type="text" placeholder='Message' className='flex-1 min-w-0 text-sm py-2 px-1 bg-transparent outline-none text-gray-900 placeholder-gray-700' />
           <input onChange={handleSendImage} type='file' id='image' accept='image/png,image/jpeg,image/jpg' hidden />
           <label htmlFor="image" className='shrink-0 cursor-pointer'>
