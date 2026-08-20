@@ -5,15 +5,23 @@ import { io,userSocketMap } from "../app.js";
 
 // get all users except logged in user
 export const getUsersForSidebar = async (req, res) => {
+    const start = Date.now();
+
     try {
         const userId = req.user._id;
 
-        // Get all users except current user
+        const usersStart = Date.now();
+
         const filteredUser = await User.find({
             _id: { $ne: userId }
         }).select("-password");
 
-        // Get all unseen messages received by current user
+        console.log(
+            `User.find: ${Date.now() - usersStart}ms`
+        );
+
+        const messagesStart = Date.now();
+
         const unseenMessagesData = await Message.aggregate([
             {
                 $match: {
@@ -29,11 +37,19 @@ export const getUsersForSidebar = async (req, res) => {
             }
         ]);
 
+        console.log(
+            `Message.aggregate: ${Date.now() - messagesStart}ms`
+        );
+
         const unseenMessages = {};
 
         unseenMessagesData.forEach((item) => {
             unseenMessages[item._id.toString()] = item.count;
         });
+
+        console.log(
+            `getUsersForSidebar total: ${Date.now() - start}ms`
+        );
 
         res.json({
             success: true,
