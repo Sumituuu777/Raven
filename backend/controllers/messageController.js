@@ -4,27 +4,52 @@ import cloudinary from "../lib/cloudinary.js"
 import { io,userSocketMap } from "../app.js";
 
 // get all users except logged in user
-export const getUsersForSidebar=async(req,res)=>{
+export const getUsersForSidebar = async (req, res) => {
     try {
-        const userId=req.user._id;
-        const filteredUser=await User.find({_id:{$ne:userId}}).select("-password")
+        const userId = req.user._id;
 
-        // count the no of message not seen 
-        const unseenMessages={}
-        const promises= filteredUser.map( async (user)=>{
-            const message= await Message.find({senderId:user._id , receveirId:userId,seen:false})
-            if(message.length>0){
-                unseenMessages[user._id]=message.length
+        // Get all users except current user
+        const filteredUser = await User.find({
+            _id: { $ne: userId }
+        }).select("-password");
+
+        // Get all unseen messages received by current user
+        const unseenMessagesData = await Message.aggregate([
+            {
+                $match: {
+                    receveirId: userId,
+                    seen: false
+                }
+            },
+            {
+                $group: {
+                    _id: "$senderId",
+                    count: { $sum: 1 }
+                }
             }
-        })
-        await Promise.all(promises)
-        res.json({success:true, users:filteredUser,unseenMessages})
+        ]);
+
+        const unseenMessages = {};
+
+        unseenMessagesData.forEach((item) => {
+            unseenMessages[item._id.toString()] = item.count;
+        });
+
+        res.json({
+            success: true,
+            users: filteredUser,
+            unseenMessages
+        });
+
     } catch (error) {
-        console.log(error.message)
-        res.json({success:false,message:error.message})
-        
+        console.log(error.message);
+
+        res.json({
+            success: false,
+            message: error.message
+        });
     }
-}
+};
 
 // get all messages from selected users
 
