@@ -59,6 +59,13 @@ app.use(express.json({ limit: "4mb" }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
+//health route 
+app.get("/api/health", (req, res) => {
+    res.status(200).json({
+        success: true,
+        message: "Raven API is healthy"
+    });
+});
 // Routes
 app.use("/api/auth", userRouter);
 app.use("/api/messages", messageRouter);
