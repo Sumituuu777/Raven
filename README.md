@@ -211,6 +211,16 @@ Users can:
 - Explore blogs shared by other users
 
 ---
+# Current latency
+MongoDB Mumbai
+        ↓
+Render Oregon
+
+/api/messages/users
+
+Average: ~989ms
+P95:     ~1.07s
+Errors:  0%
 
 ## 🤝 Contributing
 
