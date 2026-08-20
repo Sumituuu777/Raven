@@ -10,36 +10,45 @@ export const getUsersForSidebar = async (req, res) => {
     try {
         const userId = req.userId;
 
-        const usersStart = Date.now();
+        const userPromise = (async () => {
+            const start = Date.now();
 
-        const filteredUser = await User.find({
-            _id: { $ne: userId }
-        }).select("-password");
+            const users = await User.find({
+                _id: { $ne: userId }
+            }).select("-password");
 
-        console.log(
-            `User.find: ${Date.now() - usersStart}ms`
-        );
+            console.log(`User.find: ${Date.now() - start}ms`);
 
-        const messagesStart = Date.now();
+            return users;
+        })();
 
-        const unseenMessagesData = await Message.aggregate([
-            {
-                $match: {
-                    receveirId: userId,
-                    seen: false
+        const messagePromise = (async () => {
+            const start = Date.now();
+
+            const messages = await Message.aggregate([
+                {
+                    $match: {
+                        receveirId: userId,
+                        seen: false
+                    }
+                },
+                {
+                    $group: {
+                        _id: "$senderId",
+                        count: { $sum: 1 }
+                    }
                 }
-            },
-            {
-                $group: {
-                    _id: "$senderId",
-                    count: { $sum: 1 }
-                }
-            }
+            ]);
+
+            console.log(`Message.aggregate: ${Date.now() - start}ms`);
+
+            return messages;
+        })();
+
+        const [filteredUser, unseenMessagesData] = await Promise.all([
+            userPromise,
+            messagePromise
         ]);
-
-        console.log(
-            `Message.aggregate: ${Date.now() - messagesStart}ms`
-        );
 
         const unseenMessages = {};
 
