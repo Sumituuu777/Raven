@@ -7,7 +7,7 @@ import { io, userSocketMap } from "../app.js";
 export const CreateBlog = async (req, res) => {
     try {
         const { title, content, coverImage } = req.body;
-        const author = req.user._id;
+        const author = req.userId;
         if (!title || !content) {
             return res.json({
                 success: false,
@@ -72,7 +72,7 @@ export const updateBlog = async (req, res) => {
         }
 
         // only authorized person should delete his blog
-        if (oldBlog.author.toString() !== req.user._id.toString()) {
+        if (oldBlog.author.toString() !== req.userId.toString()) {
             return res.json({
                 success: false,
                 message: "Unauthorized"
@@ -130,7 +130,7 @@ export const deleteBlog = async (req, res) => {
             });
         }
 
-        if (blog.author.toString() !== req.user._id.toString()) {
+        if (blog.author.toString() !== req.userId.toString()) {
             return res.json({
                 success: false,
                 message: "Unauthorized to delete blog"
@@ -153,7 +153,7 @@ export const deleteBlog = async (req, res) => {
 //------------------------------toggle like blog ----------------------------------------------------------------------
 export const toggleLikeBlog = async (req, res) => {
     try {
-        const userId = req.user._id;
+        const userId = req.userId;
         const blogId = req.params.blogId;
 
         const blog = await Blogs.findById(blogId);

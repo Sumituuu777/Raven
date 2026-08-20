@@ -70,7 +70,7 @@ export const updateProfile = async (req, res) => {
     try {
         const { fullName, bio, profilePic } = req.body;
 
-        const userId = req.user._id
+        const userId = req.userId
         let updatedUser
 
         if (!profilePic) {

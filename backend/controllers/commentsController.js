@@ -7,7 +7,7 @@ import Comments from "../Models/comment.js"
 export const addComment = async (req, res) => {
     try {
         const blogId = req.params.blogId;
-        const user = req.user._id;
+        const user = req.userId;
         const { text } = req.body;
         if (!text) {
             return res.json({
@@ -64,7 +64,7 @@ export const deleteComment = async (req, res) => {
             });
         }
 
-        if (comment.user.toString() !== req.user._id.toString()) {
+        if (comment.user.toString() !== req.userId.toString()) {
             return res.json({
                 success: false,
                 message: "Unauthorized to delete comment"

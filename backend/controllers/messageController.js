@@ -8,7 +8,7 @@ export const getUsersForSidebar = async (req, res) => {
     const start = Date.now();
 
     try {
-        const userId = req.user._id;
+        const userId = req.userId;
 
         const usersStart = Date.now();
 
@@ -72,7 +72,7 @@ export const getUsersForSidebar = async (req, res) => {
 export const getMessages=async (req,res)=>{
     try {
         const { id:selectedUserId}=req.params
-        const myId =req.user._id
+        const myId =req.userId
 
         const messages=await Message.find({
             $or:[
@@ -112,7 +112,7 @@ export const markMessageSeen=async(req,res)=>{
         
         const {text,image}=req.body
         const receveirId=req.params.id
-        const senderId = req.user._id
+        const senderId = req.userId
 
         let imageurl
 
@@ -148,7 +148,7 @@ export const markMessageSeen=async(req,res)=>{
 export const deleteMessage=async (req,res)=>{
     try {
         const msgId=req.params.msgId;
-        const userId=req.user._id;
+        const userId=req.userId;
         const message=await Message.findOne({_id:msgId})
         if(!message){
             return res.json({
